@@ -26,8 +26,11 @@ class PageManager{
 		this.pages = pages;
 		this.current_page = default_page || util.firstKey(pages);
 	}
-	getPage(name, new_page){
+	addPage(name, new_page){
 		this.pages[name] = new_page;
+	}
+	getPage(name){
+		return this.pages[name];
 	}
 	setPage(pages){
 		this.pages = new_page;
@@ -54,6 +57,10 @@ class PageManager{
 		this.pages[this.current_page].loadState();
 		this._showPage();
 	}
+}
+
+class Component{
+
 }
 
 class Page{
