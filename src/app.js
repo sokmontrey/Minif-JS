@@ -118,12 +118,22 @@ class Component{
 		for(let one of elements) one.innerHTML = this.var[v_name];
 	}
 
+	_removeEvent(e_name){
+		const elements = dom.getWithAttribute('event', e_name);
+		for(let one of elements){
+			const event_types = one.getAttribute('on').split(' ');
+			for(let type of event_types){
+				one.removeEventListener(type, this.event[e_name]);
+			}
+		}
+	}
 	_updateEvent(e_name){
 		const elements = dom.getWithAttribute('event', e_name);
 		for(let one of elements){
 			const event_types = one.getAttribute('on').split(' ');
-			for(let type of event_types)
+			for(let type of event_types){
 				one.addEventListener(type, this.event[e_name]);
+			}
 		}
 	}
 	setVar(new_var){
@@ -135,6 +145,7 @@ class Component{
 
 	setEvent(new_event){
 		for(let name in new_event){
+			this._removeEvent(name);
 			this.event[name] = new_event[name];
 			this._updateEvent(name);
 		}
@@ -143,13 +154,34 @@ class Component{
 }
 
 class Home extends Component{
-	constructor(props){ 
-		super(); 
-		this.setVar({ a:1 });
+	constructor(){ super(); }
+	loadState(){
+		this.setVar({
+			a: 1,
+		});
+		this.setEvent({
+			updateA: ()=>{
+				this.setVar({
+					a: this.var.a + 1
+				});
+			}
+		});
 	}
 }
 class View extends Component{
 	constructor(){ super(); }
+	loadState(){
+		this.setVar({
+			b: 2
+		});
+		this.setEvent({
+			updateB: ()=>{
+				this.setVar({
+					b: this.var.b + 2
+				})
+			}
+		});
+	}
 }
 
 class Topbar extends Component{
