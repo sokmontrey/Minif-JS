@@ -134,33 +134,25 @@ class Component{
 		}
 	}
 
-	isSetEvent = false;
 	setEvent(new_event){
-		if(this.isSetEvent) throw "'setEvent' method cannot be called twice";
-
+		let method_tobe_reset = '';
 		for(let name in new_event){
-			this.event[name] = new_event[name];
-			this._updateEvent(name);
+			if(this.event[name]){
+				method_tobe_reset += name + ", ";
+			}else{
+				this.event[name] = new_event[name];
+				this._updateEvent(name);
+			}
 		}
-		this.isSetEvent = true;
+		if(method_tobe_reset.length) 
+			throw `${method_tobe_reset}cannot be set again`;
 	}
 	loadState(){}
 }
 
 class Home extends Component{
-	constructor(){ 
-		super(); 
-
-		this.setEvent({
-			updateA: ()=>{
-				this.setVar({a: this.var.a + 1}); 
-			}
-		});
-	}
+	constructor(){ super(); }
 	loadState(){
-		this.setVar({
-			a: 2
-		});
 	}
 }
 class View extends Component{
@@ -169,16 +161,6 @@ class View extends Component{
 
 class Topbar extends Component{
 	constructor(){ super(); }
-	loadState(){
-		this.setEvent({
-			updateB: ()=>{
-				this.setVar({b: "Hello world"})
-			}
-		});
-		this.setVar({
-			b: 10
-		});
-	}
 }
 
 const pageManager = new PageManager();
