@@ -126,7 +126,6 @@ class Component{
 				one.addEventListener(type, this.event[e_name]);
 		}
 	}
-
 	setVar(new_var){
 		for(let name in new_var){
 			this.var[name] = new_var[name];
@@ -135,32 +134,18 @@ class Component{
 	}
 
 	setEvent(new_event){
-		let method_tobe_reset = '';
 		for(let name in new_event){
-			if(this.event[name]){
-				method_tobe_reset += name + ", ";
-			}else{
-				this.event[name] = new_event[name];
-				this._updateEvent(name);
-			}
+			this.event[name] = new_event[name];
+			this._updateEvent(name);
 		}
-		if(method_tobe_reset.length) 
-			throw `${method_tobe_reset}cannot be set again`;
 	}
 	loadState(){}
 }
 
 class Home extends Component{
-	constructor(){ super(); }
-	loadState(){
-		this.setEvent({
-			toHome: ()=>{
-				pageManager.changeRouteTo('home');
-			},
-			toView: ()=>{
-				pageManager.changeRouteTo('view');
-			}
-		});
+	constructor(props){ 
+		super(); 
+		this.setVar({ a:1 });
 	}
 }
 class View extends Component{
@@ -168,16 +153,35 @@ class View extends Component{
 }
 
 class Topbar extends Component{
-	constructor(){ super(); }
+	props = {}
+	constructor(props){ 
+		super(); 
+		this.props = props;
+	}
+	loadState(){
+		this.setEvent({
+			toHome: ()=>{ this.props.onNavigate('home') },
+			toView: ()=>{ this.props.onNavigate('view') },
+		})
+	}
 }
 
-const pageManager = new PageManager();
-pageManager.setPage({
-	home: new Home(),
-	view: new View(),
-})
-pageManager.setComponent({
-	topbar: new Topbar()
-});
-pageManager.render();
+class App{
+	constructor(){
+		const pageManager = new PageManager();
+		pageManager.setPage({
+			home: new Home(),
+			view: new View(),
+		});
+		pageManager.setComponent({
+			topbar: new Topbar({
+				onNavigate: (page) => {
+					pageManager.changePageTo(page);
+				}
+			})
+		});
+		pageManager.render();
+	}
+}
 
+const app = new App();
