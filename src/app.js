@@ -20,33 +20,39 @@ class Util{
 const util = new Util();
 
 class PageManager{
-	_current_page;
+	current_page;
 
 	constructor(pages={}, default_page){
-		this._pages = pages;
-		this._current_page = default_page || util.firstKey(pages);
+		this.pages = pages;
+		this.current_page = default_page || util.firstKey(pages);
 	}
 	getPage(name, new_page){
-		this._pages[name] = new_page;
+		this.pages[name] = new_page;
 	}
 	setPage(pages){
-		this._pages = new_page;
+		this.pages = new_page;
 	}
 
 	_hideAllPage(){
-		const all_pages = dom.getWithClass('$page');
+		const all_pages = dom.getWithAttribute('page');
 		for(let one of all_pages){
 			one.style.visibility = 'hidden';
 			one.style.display = 'none';
 		}
 	}
 	changePageTo(new_page){
-		this._current_page = new_page;
-		//TODO: reload
+		this.current_page = new_page;
+		this.render();
+	}
+	_showPage(){
+		const element = dom.getWithAttribute('page', this.current_page);
+		element[0].style.visibility = 'visible';
+		element[0].style.display = 'block';
 	}
 	render(){
 		this._hideAllPage();
-		this._pages[this._current_page].render();
+		this.pages[this.current_page].loadState();
+		this._showPage();
 	}
 }
 
@@ -86,6 +92,7 @@ class Page{
 		}
 		this.isSetEvent = true;
 	}
+	loadState(){}
 }
 class Home extends Page{
 	constructor(){ 
@@ -97,15 +104,21 @@ class Home extends Page{
 			}
 		});
 	}
-	render(){
+	loadState(){
 		this.setVar({
 			a: 2
 		});
 	}
 }
+class View extends Page{
+	constructor(){ 
+		super(); 
+	}
+}
 
 const pageManager = new PageManager({
-	home: new Home()
+	home: new Home(),
+	view: new View()
 });
 pageManager.render();
 
