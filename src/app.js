@@ -9,6 +9,14 @@ class DOM{
 		const attr = `[${attr_name}${value!==null?`="${value}"`:''}]`;
 		return document.querySelectorAll(attr);
 	}
+	hideElement(element){
+		element.style.visibility = 'hidden';
+		element.style.display = 'none';
+	}
+	showElement(element){
+		element.style.visibility = 'visible';
+		element.style.display = 'block';
+	}
 }
 const dom = new DOM();
 
@@ -38,10 +46,7 @@ class PageManager{
 
 	_hideAllPage(){
 		const all_pages = dom.getWithAttribute('page');
-		for(let one of all_pages){
-			one.style.visibility = 'hidden';
-			one.style.display = 'none';
-		}
+		for(let one of all_pages) dom.hideElement(one);
 	}
 	changePageTo(new_page){
 		this.current_page = new_page;
@@ -49,13 +54,20 @@ class PageManager{
 	}
 	_showPage(){
 		const element = dom.getWithAttribute('page', this.current_page);
-		element[0].style.visibility = 'visible';
-		element[0].style.display = 'block';
+		dom.showElement(element[0]);
 	}
 	render(){
 		this._hideAllPage();
 		this.pages[this.current_page].loadState();
 		this._showPage();
+	}
+}
+class ComponentManager{
+	_hideAllComponent(){
+		const elements = dom.getWithAttribute('component');
+		for(let one of elements) one.hideElement(one);
+	}
+	render(){
 	}
 }
 
