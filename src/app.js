@@ -1,13 +1,13 @@
 class DOM{
-	getWithClass(class_name){
-		return document.getElementsByClassName(class_name);
+	getWithClass(class_name, element=document){
+		return element.getElementsByClassName(class_name);
 	}
-	getWithId(id){
-		return document.getElementById(id);
+	getWithId(id, element=document){
+		return element.getElementById(id);
 	}
-	getWithAttribute(attr_name, value=null){
+	getWithAttribute(attr_name, value=null, element=document){
 		const attr = `[${attr_name}${value!==null?`="${value}"`:''}]`;
-		return document.querySelectorAll(attr);
+		return element.querySelectorAll(attr);
 	}
 	hideElement(element){
 		element.style.visibility = 'hidden';
@@ -27,6 +27,42 @@ class Util{
 }
 const util = new Util();
 
+class ComponentManager{
+	_hideAllComponent(){
+		const elements = dom.getWithAttribute('component');
+		for(let one of elements) dom.hideElement(one);
+	}
+	_removeAllUser(){
+		const elements = dom.getWithAttribute('use');
+		for(let one of elements) one.innerHTML = '';
+	}
+	_replaceAllComponent(){
+		const elements = dom.getWithAttribute('component');
+		for(let one of elements){
+			const com_name = one.getAttribute('component');
+			const user_element = dom.getWithAttribute('use', com_name);
+			for(let element of user_element) 
+				element.innerHTML = one.innerHTML;
+		}
+	}
+	_replaceComponent(page_name){
+		const container = dom.getWithAttribute('page', page_name)[0];
+		const user_elements = dom.getWithAttribute('use', null, container);
+		for(let one of user_elements){
+			const com_name = one.getAttribute('use');
+			const component = dom.getWithAttribute('component', com_name);
+			one.innerHTML = component[0].innerHTML;
+		}
+	}
+	render(page_name=null){
+		this._hideAllComponent();
+		this._removeAllUser();
+
+		page_name!==null
+			? this._replaceComponent(page_name) 
+			: this._replaceAllComponent();
+	}
+}
 class PageManager{
 	current_page;
 
@@ -36,7 +72,10 @@ class PageManager{
 	}
 	addPage(name, new_page){ this.pages[name] = new_page; }
 	getPage(name){ return this.pages[name]; }
-	setPage(pages){ this.pages = pages; }
+	setPage(pages){ 
+		this.pages = pages; 
+		this.current_page = util.firstKey(pages);
+	}
 
 	_hideAllPage(){
 		const all_pages = dom.getWithAttribute('page');
@@ -94,6 +133,7 @@ class Component{
 	}
 	loadState(){}
 }
+
 class Home extends Component{
 	constructor(){ 
 		super(); 
