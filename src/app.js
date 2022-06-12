@@ -34,15 +34,9 @@ class PageManager{
 		this.pages = pages;
 		this.current_page = default_page || util.firstKey(pages);
 	}
-	addPage(name, new_page){
-		this.pages[name] = new_page;
-	}
-	getPage(name){
-		return this.pages[name];
-	}
-	setPage(pages){
-		this.pages = new_page;
-	}
+	addPage(name, new_page){ this.pages[name] = new_page; }
+	getPage(name){ return this.pages[name]; }
+	setPage(pages){ this.pages = pages; }
 
 	_hideAllPage(){
 		const all_pages = dom.getWithAttribute('page');
@@ -122,9 +116,10 @@ class View extends Component{
 	}
 }
 
-const pageManager = new PageManager({
+const pageManager = new PageManager();
+pageManager.setPage({
 	home: new Home(),
-	view: new View()
-});
+	view: new View(),
+})
 pageManager.render();
 
