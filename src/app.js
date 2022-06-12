@@ -153,6 +153,14 @@ class Component{
 class Home extends Component{
 	constructor(){ super(); }
 	loadState(){
+		this.setEvent({
+			toHome: ()=>{
+				pageManager.changeRouteTo('home');
+			},
+			toView: ()=>{
+				pageManager.changeRouteTo('view');
+			}
+		});
 	}
 }
 class View extends Component{
