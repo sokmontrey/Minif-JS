@@ -67,6 +67,7 @@ class PageManager{
 	current_page;
 
 	constructor(pages={}, default_page){
+		this.componentManager = new ComponentManager();
 		this.pages = pages;
 		this.current_page = default_page || util.firstKey(pages);
 	}
@@ -91,6 +92,7 @@ class PageManager{
 	}
 	render(){
 		this._hideAllPage();
+		this.componentManager.render(this.current_page);
 		this.pages[this.current_page].loadState();
 		this._showPage();
 	}
