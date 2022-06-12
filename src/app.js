@@ -62,14 +62,6 @@ class PageManager{
 		this._showPage();
 	}
 }
-class ComponentManager{
-	_hideAllComponent(){
-		const elements = dom.getWithAttribute('component');
-		for(let one of elements) one.hideElement(one);
-	}
-	render(){
-	}
-}
 
 class Component{
 	var = {};
@@ -84,9 +76,8 @@ class Component{
 		const elements = dom.getWithAttribute('event', e_name);
 		for(let one of elements){
 			const event_types = one.getAttribute('on').split(' ');
-			for(let type of event_types){
+			for(let type of event_types)
 				one.addEventListener(type, this.event[e_name]);
-			}
 		}
 	}
 
