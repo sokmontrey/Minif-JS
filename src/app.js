@@ -66,16 +66,18 @@ class ComponentManager{
 class PageManager{
 	current_page;
 
-	constructor(pages={}, default_page){
+	constructor(pages={}, components={}, default_page){
 		this.componentManager = new ComponentManager();
 		this.pages = pages;
+		this.components = components;
 		this.current_page = default_page || util.firstKey(pages);
 	}
-	addPage(name, new_page){ this.pages[name] = new_page; }
-	getPage(name){ return this.pages[name]; }
 	setPage(pages){ 
 		this.pages = pages; 
 		this.current_page = util.firstKey(pages);
+	}
+	setComponent(components){
+		this.components = components;
 	}
 
 	_hideAllPage(){
@@ -90,9 +92,18 @@ class PageManager{
 		const element = dom.getWithAttribute('page', this.current_page);
 		dom.showElement(element[0]);
 	}
+	_loadComponentState(){
+		const user_elements = dom.getWithAttribute('use');
+		const all_components = {};
+		for(let one of user_elements)
+			all_components[one.getAttribute('use')] = 1;
+		for(let c_name in all_components)
+			this.components[c_name].loadState();
+	}
 	render(){
 		this._hideAllPage();
 		this.componentManager.render(this.current_page);
+		this._loadComponentState();
 		this.pages[this.current_page].loadState();
 		this._showPage();
 	}
@@ -153,8 +164,20 @@ class Home extends Component{
 	}
 }
 class View extends Component{
-	constructor(){ 
-		super(); 
+	constructor(){ super(); }
+}
+
+class Topbar extends Component{
+	constructor(){ super(); }
+	loadState(){
+		this.setEvent({
+			updateB: ()=>{
+				this.setVar({b: "Hello world"})
+			}
+		});
+		this.setVar({
+			b: 10
+		});
 	}
 }
 
@@ -163,5 +186,8 @@ pageManager.setPage({
 	home: new Home(),
 	view: new View(),
 })
+pageManager.setComponent({
+	topbar: new Topbar()
+});
 pageManager.render();
 
