@@ -60,10 +60,6 @@ class PageManager{
 }
 
 class Component{
-
-}
-
-class Page{
 	var = {};
 	event = {};
 
@@ -101,7 +97,7 @@ class Page{
 	}
 	loadState(){}
 }
-class Home extends Page{
+class Home extends Component{
 	constructor(){ 
 		super(); 
 
@@ -117,7 +113,7 @@ class Home extends Page{
 		});
 	}
 }
-class View extends Page{
+class View extends Component{
 	constructor(){ 
 		super(); 
 	}
