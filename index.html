@@ -5,8 +5,8 @@
 </head>
 <body>
 	<div component='topbar'>
-		<button>Home</button>
-		<button>View</button>
+		<button event='toHome' on='click'>Home</button>
+		<button event='toView' on='click'>View</button>
 		<button>Photo</button>
 		<button>Category</button>
 	</div>
@@ -14,11 +14,15 @@
 	<div page='home'>
 		<div use='topbar'></div>
 		Home
+		<p var='a'></p>
+		<button event='updateA' on='click'>Click</button>
 	</div>
 
 	<div page='view'>
 		<div use='topbar'></div>
 		View
+		<p var='b'></p>
+		<button event='updateB' on='click'>Click</button>
 	</div>
 	<div page='photo'>
 		<div use='topbar'></div>
