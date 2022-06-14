@@ -17,7 +17,7 @@ class DOM{
 	}
 	replaceProperty(parent=document,attr_type, attr_name, value){
 		const elements = this.getWithAttribute(attr_type, attr_name, parent);
-		for(let one of elements) one.innerHTML = value;
+		//TODO
 	}
 	setValue(parent=document,attr_name, value){
 		const elements = this.getWithAttribute('value', attr_name, parent);
