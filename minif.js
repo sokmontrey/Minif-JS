@@ -57,9 +57,23 @@ class Component extends Minif{
 	event;
 
 	constructor({name, type}){ 
-		super({name: name}); 
+		super({name: name, type:'component'}); 
+
 		this._getEvent();
 		this._attachEvent();
+
+		this.load();
+		this._getArgs();
+	}
+	_getArgs(){
+		const elements = this.getElement();
+		for(let one of elements){
+			const args= one.getAttribute('args');
+			if(args === null) continue;
+			const args_object = JSON.parse(args);
+			this.value = {...this.value, ...args_object};
+		}
+		this._updateValue();
 	}
 	_getEvent(){ this.event = this.setEvent(); }
 	_attachEvent(){
@@ -85,16 +99,16 @@ class Component extends Minif{
 		}
 	}
 	setEvent(){ return null; }
+	load(){return null}
 	setValue(new_val){
-		for(let val_name in new_val) 
-			this.value[val_name] = new_val[val_name];
+		this.value = {...this.value, ...new_val}
 		this._updateValue();
 	}
 }
 class Home extends Component{
 	constructor(){
 		super({name: 'home'});
-		this.setValue({a:1});
+		this.setValue({a: this.value.a + 1})
 	}
 	setEvent(){
 		return {
