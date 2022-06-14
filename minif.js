@@ -38,6 +38,9 @@ class DOM{
 }
 const dom = new DOM();
 
+/*
+ template -> replace
+*/
 class Minif{
 	type;
 	name;
@@ -48,25 +51,15 @@ class Minif{
 		this.name = name;
 	}
 	getElement(){
+		if(this.name === null) 
+			return dom.getWithTag(this.type);
 		return dom.getWithTag(this.type)[this.name];
 	}
 }
-class Template extends Minif{
-	constructor({name}){
-		super({type: 'template', name: name});
-		//TODO
-	}
-}
-class RecentContainer extends Template{
-	constructor({name}){
-		super({name: name});
-	}
-} 
-const rc = new RecentContainer({name: 'recentContainer'});
 
 class Component extends Minif{
-	constructor({name}){
-		super({type: 'component', name: name});
+	constructor({name=null}){
+		super({type:'component', name: name});
 	}
 }
 

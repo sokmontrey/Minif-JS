@@ -25,17 +25,14 @@
 
 			<template name='recentContainer'>
 				<div>
-					<p value='title'></p>
+					<h1 value='title'></h1>
 					<p value='description'></p>
 				</div>
 			</template>
 
 			<loop name='loop1'>
-				<div>
-					Hello world 
-					<p value='i'></p>
-					<p value='v'></p>
-				</div>
+				<component use='recentContainer' args='{"title": "v", "description": "i"}'>
+				</component>
 			</loop>
 		</page>
 
