@@ -12,6 +12,9 @@ class DOM{
 	getWithTag(tag_name, element=document){
 		return element.getElementsByTagName(tag_name);
 	}
+	getAttribute(element, attribute_name){
+		return element.getAttribute(attribute_name).split(' ');
+	}
 
 	hideElement(element){
 		element.style.visibility = 'hidden';
@@ -24,16 +27,20 @@ class DOM{
 }
 const dom = new DOM();
 
+class ComponentManager{
+	constructor(){
+
+	}
+}
+
 class Component{
 	type = "component";
 	constructor({type}){
 		this.type = type;
 	}
-
-	_getComponent(){
-		dom.getWithTag
-	}
-
+}
+class Topbar extends Component{
+	constructor(){ super(); }
 }
 /*
 class App{
