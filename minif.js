@@ -56,7 +56,7 @@ class Component extends Minif{
 	value={}
 	event;
 
-	constructor({name, type}){ 
+	constructor({name}){ 
 		super({name: name, type:'component'}); 
 
 		this._getEvent();
