@@ -27,21 +27,55 @@ class DOM{
 }
 const dom = new DOM();
 
-class ComponentManager{
-	constructor(){
-
-	}
-}
-
-class Component{
-	type = "component";
+class Minif{
+	type =''
+	name =''
+	value ={}
+	event ={}
 	constructor({type}){
 		this.type = type;
 	}
 }
-class Topbar extends Component{
-	constructor(){ super(); }
+
+class Loop extends Minif{
+	constructor(){
+		super({type: 'loop'});
+	}
+	setName(name){ this.name=name; }
+	each(iteratee){
+		for(let i=0; i<iteratee; i++){
+			console.log(i);
+		}
+	}
 }
+class Loop1 extends Loop{
+	constructor(){
+		super();
+
+		this.setName('loop1');
+		this.each(5);
+	}
+}
+const l = new Loop1();
+/*
+class Template extends Minif{
+	constructor(name){
+		super({ type: 'template', name: name });
+	}
+}
+class Page extends Minif{
+	constructor(name){
+		super({ type: 'page', name: name });
+	}
+}
+class Component extends Minif{
+	constructor(name){
+		super({ type: 'component', name: name });
+	}
+}
+*/
+/*-----------------------*/
+
 /*
 class App{
 	constructor(){
