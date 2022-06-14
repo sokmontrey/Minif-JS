@@ -15,9 +15,13 @@ class DOM{
 	getAttribute(element, attribute_name){
 		return element.getAttribute(attribute_name).split(' ');
 	}
-	replaceProperty(parent=document,attr_type, attr_name, value){
-		const elements = this.getWithAttribute(attr_type, attr_name, parent);
-		//TODO
+	replaceProperty(parent=document,attr_type, new_object){
+		const element = this.getWithAttribute(attr_type, null, parent)[0]
+		const object = JSON.parse(element.getAttribute('args'));
+		for(let key in object){
+			object[key] = new_object[object[key]];
+		}
+		element.setAttribute(attr_type, JSON.stringify(object));
 	}
 	setValue(parent=document,attr_name, value){
 		const elements = this.getWithAttribute('value', attr_name, parent);
@@ -84,7 +88,9 @@ class Loop extends Minif{
 	_insertVariable(element, object){
 		for(let value_name in object)
 			dom.setValue(element, value_name, object[value_name]); 
-		return element;
+	}
+	_replaceArgs(element, object){
+		dom.replaceProperty(element, 'args', object);
 	}
 	_push(object){
 		const element = new DOMParser()
@@ -92,6 +98,7 @@ class Loop extends Minif{
 			.firstChild;
 
 		this._insertVariable(element, object);
+		this._replaceArgs(element, object);
 
 		const old = this.getElement();
 		old.innerHTML = old.innerHTML + element.innerHTML;
