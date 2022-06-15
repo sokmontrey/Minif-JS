@@ -1,9 +1,41 @@
 <html>
 	<head>
 		<script defer src='minif.js'></script>
+
+		<style>
+.panel{
+	width: 20vw;
+	height: 20vw;
+	background-color: gray;
+	margin:10px;
+}
+		</style>
 	</head>
 	<body>
-		Hello world
+		<template name='topbar'>
+			<div>
+				<p>Emery Sport.</p>
+				<button>Home</button>
+				<button>View</button>
+			</div>
+		</template>
+
+		<page name='home'>
+			<component use='topbar'></component>
+
+			<template name='recentContainer'>
+				<div class='panel'>
+					<p var='a'></p>
+					<p var='b'></p>
+				</div>
+			</template>
+
+			<component use='recentContainer' name='use1' var="{a: 1, b:2}"></component>
+		</page>
+
+		<page name='view'>
+			<component use='topbar'></component>
+		</page>
 	</body>
 </html>
 
