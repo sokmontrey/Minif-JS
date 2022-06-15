@@ -41,7 +41,25 @@ class Minif{
 		this.name = name;
 	}
 	getElement(){
-		return dom.getWithTag(this.type)[this.name] || undefined;
+		return dom.getWithTag(this.type)[this.name];
+	}
+}
+class Template extends Minif{
+	constructor({name}){
+		super({type: 'template', name: name});
+		//TODO
+	}
+}
+class RecentContainer extends Template{
+	constructor({name}){
+		super({name: name});
+	}
+} 
+const rc = new RecentContainer({name: 'recentContainer'});
+
+class Component extends Minif{
+	constructor({name}){
+		super({type: 'component', name: name});
 	}
 }
 
@@ -60,7 +78,8 @@ class Loop extends Minif{
 	_removeInnerHTML(){
 		this.getElement().innerHTML = '';
 	}
-	_pushEach(object){
+	_push(object){
+		/*--replace variable--*/
 		const element =new DOMParser()
 			.parseFromString(`<div>${this.inner}</div>`, 'text/xml')
 			.firstChild;
@@ -68,6 +87,7 @@ class Loop extends Minif{
 		for(let var_name in object)
 			dom.setValue(element, var_name, object[var_name]); 
 
+		/*--push--*/
 		const old = this.getElement();
 		old.innerHTML = old.innerHTML + element.innerHTML;
 	}
@@ -75,25 +95,25 @@ class Loop extends Minif{
 	each(iteratee, callback){
 		if(typeof iteratee === 'object' && iteratee !== null){
 			for(let i in iteratee){
-				this._pushEach(callback(iteratee[i], 
+				this._push(callback(iteratee[i], 
 					iteratee.constructor===Array?parseInt(i):i));
 			}
 		}else{
 			for(let i=0; i<iteratee; i++)
-				this._pushEach(callback(i, i));
+				this._push(callback(i, i));
 		}
 	}
 }
 class Loop1 extends Loop{
-	constructor(){
-		super({name: 'loop1'});
+	constructor({name}){
+		super({name: name});
 
 		this.each({a:1, b:2}, (value, index)=>{
 			return { v: value, i: index };
 		});
 	}
 }
-const l = new Loop1();
+const l = new Loop1({name: 'loop1'});
 /*
 class Template extends Minif{
 	constructor(name){
