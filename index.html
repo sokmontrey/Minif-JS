@@ -20,7 +20,7 @@
 			</div>
 		</template>
 
-		<page name='home'>
+		<page name='home' var='a b c d'>
 			<component use='topbar'></component>
 
 			<template name='recentContainer'>
@@ -30,7 +30,13 @@
 				</div>
 			</template>
 
-			<component use='recentContainer' name='use1' var="{a: 1, b:2}"></component>
+			<loop var='data' each='data:one'>
+				<component
+					use='recentContainer' 
+					name='use1' 
+					var="a b"> 
+				</component>
+			</loop>
 		</page>
 
 		<page name='view'>
