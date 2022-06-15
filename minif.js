@@ -59,6 +59,7 @@ class Component extends Minif{
 
 	render(){ 
 		this._getEvent();
+		this._detachEvent();
 		this._attachEvent();
 
 		this._getArgs();
@@ -77,14 +78,22 @@ class Component extends Minif{
 		}
 	}
 	_getEvent(){ this.event = this.setEvent(); }
+	_detachEvent(){
+		const elements = this.getElement();
+		for(let one of elements){
+			const e_elements = dom.getWithAttribute('event', null, one);
+			for(let each of e_elements) {
+				each.replaceWith(each.cloneNode(true));
+			}
+		}
+	}
 	_attachEvent(){
 		const elements = this.getElement();
-		for(let e_name in this.event){
-			for(let one of elements){
+		for(let one of elements){
+			for(let e_name in this.event){
 				const e_elements = dom.getWithAttribute('event', e_name, one);
 				for(let each of e_elements) {
 					const e_type = each.getAttribute('on');
-					each.removeEventListener(e_type, this.event[e_name]);
 					each.addEventListener(e_type, this.event[e_name]);
 				}
 			}
@@ -164,6 +173,7 @@ class Loop extends Minif{
 		}
 	}
 	render(){
+		this._removeInnerHTML();
 		//TODO: use switch
 		if(this.iteration_type === 'each')
 			this._each(this.iteratee, this.callback);
@@ -188,20 +198,23 @@ class MinifControl{
 	}
 	setPages(pages=[]){
 		this.pages = pages;
-		for(let name of pages) this.current_page = name;
-	}
-
-	_setNameAndRender(component){
-		for(let name in component){
-			component[name].setName(name);
-			component[name].render();
+		for(let name of pages) {
+			this.current_page = name;
+			break;
 		}
 	}
+
 	_runLoop(){
-		this._setNameAndRender(this.loops);
+		for(let name in this.loops){
+			this.loops[name].setName(name);
+			this.loops[name].render();
+		}
 	}
 	_runComponent(){
-		this._setNameAndRender(this.components);
+		for(let name in this.components){
+			this.components[name].setName(name);
+			this.components[name].render();
+		}
 	}
 	//TODO: remove innerHTML & replaceTemplate to the user 
 	//only if they are in the page that is rendering
@@ -251,7 +264,7 @@ class Home extends Component{
 	constructor(){
 		super();
 		this.setName('home');
-		this.setType('page');
+		this.setType('component');
 	}
 	load(){
 		this.setValue({a: this.value.a + 1})
@@ -261,6 +274,24 @@ class Home extends Component{
 			updateA: ()=>{
 				this.setValue({a: this.value.a +1})
 			}
+		}
+	}
+}
+class Topbar extends Component{
+	changePage;
+	constructor({changePage}){
+		super();
+		this.setName('topbar');
+		this.setType('component');
+		this.changePage = changePage;
+	}
+	load(){
+		this.setValue({g: 100})
+	}
+	setEvent(){
+		return {
+			toHome: ()=>{this.changePage('home')},
+			toView: ()=>{this.changePage('view')},
 		}
 	}
 }
@@ -275,7 +306,14 @@ class App{
 		const control = new MinifControl();
 		control.setPages(['home', 'view']);
 		control.setLoops({'loop1': loop});
-		control.setComponents({'home': new Home});
+		control.setComponents({
+			'home': new Home(), 
+			'topbar': new Topbar({
+				changePage: (v)=>{
+					control.changePage(v);
+				}
+			})
+		});
 		control.run();
 	}
 }
