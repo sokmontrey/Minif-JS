@@ -24,17 +24,18 @@
 			<component use='topbar'></component>
 
 			<template name='recentContainer'>
-				<div class='panel'>
+				<div>
 					<p value='title'></p>
 					<p value='description'></p>
 				</div>
 			</template>
 
-			<loop name='loop1' value='v'>
-			<!--<component use='recentContainer'></component>-->
-				Hello world 
-				<p value='index'></p>
-				<p value='v'></p>
+			<loop name='loop1'>
+				<div>
+					Hello world 
+					<p value='i'></p>
+					<p value='v'></p>
+				</div>
 			</loop>
 		</page>
 

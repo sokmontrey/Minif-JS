@@ -15,6 +15,10 @@ class DOM{
 	getAttribute(element, attribute_name){
 		return element.getAttribute(attribute_name).split(' ');
 	}
+	setValue(parent=document, value_name, value){
+		const elements = this.getWithAttribute('value', value_name, parent);
+		for(let one of elements) one.innerHTML = value;
+	}
 
 	hideElement(element){
 		element.style.visibility = 'hidden';
@@ -28,32 +32,65 @@ class DOM{
 const dom = new DOM();
 
 class Minif{
-	type =''
-	name =''
+	type;
+	name;
 	value ={}
 	event ={}
-	constructor({type}){
+	constructor({type, name}){
 		this.type = type;
+		this.name = name;
+	}
+	getElement(){
+		return dom.getWithTag(this.type)[this.name] || undefined;
 	}
 }
 
 class Loop extends Minif{
-	constructor(){
-		super({type: 'loop'});
+	inner;
+	constructor({name}){
+		super({type: 'loop', name: name});
+
+		this._storeInnerHTML();
+		this._removeInnerHTML();
 	}
-	setName(name){ this.name=name; }
-	each(iteratee){
-		for(let i=0; i<iteratee; i++){
-			console.log(i);
+
+	_storeInnerHTML(){
+		this.inner = this.getElement().innerHTML;
+	}
+	_removeInnerHTML(){
+		this.getElement().innerHTML = '';
+	}
+	_pushEach(object){
+		const element =new DOMParser()
+			.parseFromString(`<div>${this.inner}</div>`, 'text/xml')
+			.firstChild;
+
+		for(let var_name in object)
+			dom.setValue(element, var_name, object[var_name]); 
+
+		const old = this.getElement();
+		old.innerHTML = old.innerHTML + element.innerHTML;
+	}
+
+	each(iteratee, callback){
+		if(typeof iteratee === 'object' && iteratee !== null){
+			for(let i in iteratee){
+				this._pushEach(callback(iteratee[i], 
+					iteratee.constructor===Array?parseInt(i):i));
+			}
+		}else{
+			for(let i=0; i<iteratee; i++)
+				this._pushEach(callback(i, i));
 		}
 	}
 }
 class Loop1 extends Loop{
 	constructor(){
-		super();
+		super({name: 'loop1'});
 
-		this.setName('loop1');
-		this.each(5);
+		this.each({a:1, b:2}, (value, index)=>{
+			return { v: value, i: index };
+		});
 	}
 }
 const l = new Loop1();
