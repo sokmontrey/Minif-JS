@@ -15,11 +15,14 @@ class DOM{
 	getAttribute(element, attribute_name){
 		return element.getAttribute(attribute_name).split(' ');
 	}
-	setValue(parent=document, value_name, value){
-		const elements = this.getWithAttribute('value', value_name, parent);
+	replaceProperty(parent=document,attr_type, attr_name, value){
+		const elements = this.getWithAttribute(attr_type, attr_name, parent);
 		for(let one of elements) one.innerHTML = value;
 	}
-
+	setValue(parent=document,attr_name, value){
+		const elements = this.getWithAttribute('value', attr_name, parent);
+		for(let one of elements) one.innerHTML = value;
+	}
 	hideElement(element){
 		element.style.visibility = 'hidden';
 		element.style.display = 'none';
@@ -78,16 +81,18 @@ class Loop extends Minif{
 	_removeInnerHTML(){
 		this.getElement().innerHTML = '';
 	}
+	_insertVariable(element, object){
+		for(let value_name in object)
+			dom.setValue(element, value_name, object[value_name]); 
+		return element;
+	}
 	_push(object){
-		/*--replace variable--*/
-		const element =new DOMParser()
+		const element = new DOMParser()
 			.parseFromString(`<div>${this.inner}</div>`, 'text/xml')
 			.firstChild;
 
-		for(let var_name in object)
-			dom.setValue(element, var_name, object[var_name]); 
+		this._insertVariable(element, object);
 
-		/*--push--*/
 		const old = this.getElement();
 		old.innerHTML = old.innerHTML + element.innerHTML;
 	}
