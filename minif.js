@@ -215,8 +215,19 @@ class MinifControl{
 	_runComponent(){
 		this._setNameAndRender(this.components);
 	}
+	//TODO: remove innerHTML & replaceTemplate to the user 
+	//only if they are in the page that is rendering
+	_replaceTemplate(){
+		const all_user = dom.getWithAttribute('use');
+		for(let one of all_user){
+			var template_name = one.getAttribute('use');
+			const template = dom.getWithAttribute('template', template_name);
+			one.innerHTML = template[0].innerHTML;
+		}
+	}
 	run(){
 		this._runLoop();
+		this._replaceTemplate();
 		this._runComponent();
 	}
 }
