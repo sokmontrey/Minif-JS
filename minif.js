@@ -56,6 +56,7 @@ class Minif{
 class Component extends Minif{
 	value={}
 	event;
+	is_render = false;
 
 	constructor({name}){ 
 		super({name: name, type:'component'}); 
@@ -66,6 +67,10 @@ class Component extends Minif{
 		this.load();
 		this._getArgs();
 	}
+	render(){ 
+		this._updateValue(); 
+		this.is_render = true;
+	}
 	_getArgs(){
 		const elements = this.getElement();
 		for(let one of elements){
@@ -74,7 +79,6 @@ class Component extends Minif{
 			const args_object = JSON.parse(args);
 			this.value = {...this.value, ...args_object};
 		}
-		this._updateValue();
 	}
 	_getEvent(){ this.event = this.setEvent(); }
 	_attachEvent(){
@@ -103,7 +107,7 @@ class Component extends Minif{
 	load(){return null}
 	setValue(new_val){
 		this.value = {...this.value, ...new_val}
-		this._updateValue();
+		if(this.is_render) this._updateValue();
 	}
 }
 class Home extends Component{
@@ -119,17 +123,14 @@ class Home extends Component{
 		}
 	}
 }
-new Home();
+new Home().render();
 
 class Loop extends Minif{
 	inner;
-	is_managed=false;
 	iteratee;
 	callback;
-	constructor({name, is_managed=false}){
+	constructor({name}){
 		super({type: 'loop', name: name});
-
-		this.is_managed = is_managed;
 
 		this._storeInnerHTML();
 		this._removeInnerHTML();
@@ -166,10 +167,8 @@ class Loop extends Minif{
 	each(iteratee, callback){
 		this.iteratee = iteratee;
 		this.callback = callback;
-
-		if(!this.is_managed) this.start();
 	}
-	start(){
+	render(){
 		let iteratee = this.iteratee,
 			callback = this.callback;
 
@@ -188,3 +187,36 @@ const l = new Loop({name: 'loop1'});
 l.each({a:1, b:2, c:3}, (value, index)=>{
 	return { v: value, i: index };
 });
+
+class MinifControl{
+	pages;
+	components;
+	loops;
+	constructor({ pages, components, loops }){
+		this.setPages(pages);
+		this.setComponent(components);
+		this.setLoops(loops);
+	}
+	setLoops(loops=[]){
+		this.loops = loops;
+	}
+	setComponents(components=[]){
+		this.components = components;
+	}
+	setPages(pages=[]){
+		this.pages = pages;
+	}
+}
+
+class App{
+	constructor(){
+		const m = new MinifControl({
+			pages: ['home', 'view'],
+			loops: ['loop1'],
+			components: {
+				home: new Home(),
+				view: new View()
+			}
+		});
+	}
+}
