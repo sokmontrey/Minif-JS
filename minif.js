@@ -44,9 +44,9 @@ const dom = new DOM();
 class Minif{
 	type;
 	name;
-	constructor({type, name}){
-		this.type = type;
-		this.name = name;
+	constructor({type=undefined, name=undefined}){
+		this.type = type || null;
+		this.name = name || null;
 	}
 	getElement(){
 		return dom.getWithAttribute(this.type, this.name);
@@ -123,8 +123,13 @@ new Home();
 
 class Loop extends Minif{
 	inner;
-	constructor({name}){
+	is_managed=false;
+	iteratee;
+	callback;
+	constructor({name, is_managed=false}){
 		super({type: 'loop', name: name});
+
+		this.is_managed = is_managed;
 
 		this._storeInnerHTML();
 		this._removeInnerHTML();
@@ -159,6 +164,15 @@ class Loop extends Minif{
 	}
 
 	each(iteratee, callback){
+		this.iteratee = iteratee;
+		this.callback = callback;
+
+		if(!this.is_managed) this.start();
+	}
+	start(){
+		let iteratee = this.iteratee,
+			callback = this.callback;
+
 		if(typeof iteratee === 'object' && iteratee !== null){
 			for(let i in iteratee){
 				this._push(callback(iteratee[i], 
@@ -171,6 +185,6 @@ class Loop extends Minif{
 	}
 }
 const l = new Loop({name: 'loop1'});
-l.each({a:1, b:2}, (value, index)=>{
+l.each({a:1, b:2, c:3}, (value, index)=>{
 	return { v: value, i: index };
 });
