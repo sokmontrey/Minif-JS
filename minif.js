@@ -57,7 +57,7 @@ class Component extends Minif{
 	event;
 
 	constructor({name, type}){ 
-		super({type: type || 'component', name: name}); 
+		super({name: name}); 
 		this._getEvent();
 		this._attachEvent();
 	}
@@ -93,7 +93,7 @@ class Component extends Minif{
 }
 class Home extends Component{
 	constructor(){
-		super({name: 'home', type: 'page'});
+		super({name: 'home'});
 		this.setValue({a:1});
 	}
 	setEvent(){
@@ -109,7 +109,7 @@ new Home();
 class Loop extends Minif{
 	inner;
 	constructor({name}){
-		super({type: 'Loop', name: name});
+		super({type: 'loop', name: name});
 
 		this._storeInnerHTML();
 		this._removeInnerHTML();

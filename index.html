@@ -11,9 +11,7 @@
 			</div>
 		</template>
 
-		<page page='home'>
-			<p value='a'></p>
-			<button event='updateA' on='click'>Click Here</button>
+		<page page='home' component='home'>
 			<component use='topbar'></component>
 
 			<template template='recentContainer'>
@@ -29,10 +27,7 @@
 			</loop>
 		</page>
 
-		<page page='home'>
-		</page>
-
-		<page page='view'>
+		<page page='view' component='view'>
 			<component use='topbar' name='topbar'></component>
 		</page>
 	</body>
