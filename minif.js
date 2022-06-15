@@ -110,7 +110,7 @@ class Home extends Component{
 	constructor(){
 		super();
 		this.setName('home');
-		this.setType('page')
+		this.setType('page');
 	}
 	load(){
 		this.setValue({a: this.value.a + 1})
@@ -123,7 +123,6 @@ class Home extends Component{
 		}
 	}
 }
-new Home().render();
 
 class Loop extends Minif{
 	inner;
@@ -187,23 +186,14 @@ class Loop extends Minif{
 			this._each(this.iteratee, this.callback);
 	}
 }
-const l = new Loop();
-l.setName('loop1');
-l.each({a:1, b:2, c:3}, (value, index)=>{
-	return { v: value, i: index };
-});
-l.render();
 
 class MinifControl{
 	pages;
 	components;
 	loops;
-	constructor({ pages, components, loops }){
-		this.setPages(pages);
-		this.setComponent(components);
-		this.setLoops(loops);
+	constructor(){
 	}
-	setLoops(loops=[]){
+	setLoops(loops={}){
 		this.loops = loops;
 	}
 	setComponents(components=[]){
@@ -212,12 +202,38 @@ class MinifControl{
 	setPages(pages=[]){
 		this.pages = pages;
 	}
+
+	_setNameAndRender(component){
+		for(let name in component){
+			component[name].setName(name);
+			component[name].render();
+		}
+	}
+	_runLoop(){
+		this._setNameAndRender(this.loops);
+	}
+	_runComponent(){
+		this._setNameAndRender(this.components);
+	}
+	run(){
+		this._runLoop();
+		this._runComponent();
+	}
 }
 
 class App{
 	constructor(){
-		const m = new MinifControl();
-		m.setPages(['home', 'view']);
-		m.setLoop('loop1', );
+		const loop = new Loop();
+		loop.each({a:1, b:2, c:3}, (value, index)=>{
+			return { v: value, i: index };
+		});
+
+		const control = new MinifControl();
+		control.setPages(['home', 'view']);
+		control.setLoops({'loop1': loop});
+		control.setComponents({'home': new Home});
+		control.run();
 	}
 }
+
+new App();
