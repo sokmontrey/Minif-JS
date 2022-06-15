@@ -44,10 +44,9 @@ const dom = new DOM();
 class Minif{
 	type;
 	name;
-	constructor({type=undefined, name=undefined}){
-		this.type = type || null;
-		this.name = name || null;
-	}
+
+	setName(name){ this.name = name || null; }
+	setType(type){ this.type = type || 'component'; }
 	getElement(){
 		return dom.getWithAttribute(this.type, this.name);
 	}
@@ -58,16 +57,13 @@ class Component extends Minif{
 	event;
 	is_render = false;
 
-	constructor({name}){ 
-		super({name: name, type:'component'}); 
-
+	render(){ 
 		this._getEvent();
 		this._attachEvent();
 
-		this.load();
 		this._getArgs();
-	}
-	render(){ 
+		this.load();
+
 		this._updateValue(); 
 		this.is_render = true;
 	}
@@ -112,7 +108,11 @@ class Component extends Minif{
 }
 class Home extends Component{
 	constructor(){
-		super({name: 'home'});
+		super();
+		this.setName('home');
+		this.setType('page')
+	}
+	load(){
 		this.setValue({a: this.value.a + 1})
 	}
 	setEvent(){
@@ -130,9 +130,9 @@ class Loop extends Minif{
 	iteratee;
 	callback;
 	iteration_type = 'each';
-	constructor({name}){
-		super({type: 'loop', name: name});
-
+	constructor(){
+		super();
+		this.setType('loop');
 		this._storeInnerHTML();
 		this._removeInnerHTML();
 	}
@@ -184,13 +184,15 @@ class Loop extends Minif{
 	render(){
 		//TODO: use switch
 		if(this.iteration_type === 'each')
-			this._each(iteratee, callback);
+			this._each(this.iteratee, this.callback);
 	}
 }
-const l = new Loop({name: 'loop1'});
+const l = new Loop();
+l.setName('loop1');
 l.each({a:1, b:2, c:3}, (value, index)=>{
 	return { v: value, i: index };
 });
+l.render();
 
 class MinifControl{
 	pages;
@@ -214,13 +216,8 @@ class MinifControl{
 
 class App{
 	constructor(){
-		const m = new MinifControl({
-			pages: ['home', 'view'],
-			loops: ['loop1'],
-			components: {
-				home: new Home(),
-				view: new View()
-			}
-		});
+		const m = new MinifControl();
+		m.setPages(['home', 'view']);
+		m.setLoop('loop1', );
 	}
 }
