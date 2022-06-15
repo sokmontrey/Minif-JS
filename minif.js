@@ -217,6 +217,7 @@ class MinifControl{
 	}
 	//TODO: remove innerHTML & replaceTemplate to the user 
 	//only if they are in the page that is rendering
+	//TODO: or just create a reset method that reset everything
 	_replaceTemplate(){
 		const all_user = dom.getWithAttribute('use');
 		for(let one of all_user){
@@ -225,10 +226,21 @@ class MinifControl{
 			one.innerHTML = template[0].innerHTML;
 		}
 	}
+	_useArgsNoComponent(){
+		const all_args = dom.getWithAttribute('args');
+		for(let one of all_args){
+			if(one.getAttribute('component')!==null) continue;
+			const value = one.getAttribute('args');
+			const obj = JSON.parse(value);
+			for(let v_name in obj)
+				dom.setValue(one, v_name, obj[v_name]);
+		}
+	}
 	run(){
 		this._runLoop();
 		this._replaceTemplate();
 		this._runComponent();
+		this._useArgsNoComponent();
 	}
 }
 
