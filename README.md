@@ -1,4 +1,4 @@
-# minif
+# Minif-JS
 
 A mini JavaScript front-end framework written from scratch for school's website project assignment.
 
