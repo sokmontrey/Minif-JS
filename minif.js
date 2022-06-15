@@ -44,39 +44,85 @@ const dom = new DOM();
 class Minif{
 	type;
 	name;
-	value ={}
-	event ={}
 	constructor({type, name}){
 		this.type = type;
 		this.name = name;
 	}
 	getElement(){
-		if(this.name === null) 
-			return dom.getWithTag(this.type);
-		return dom.getWithTag(this.type)[this.name];
+		return dom.getWithAttribute(this.type, this.name);
 	}
 }
-
 class Component extends Minif{
-	constructor({name=null}){
-		super({type:'component', name: name});
+	value={}
+	event;
+
+	constructor({name, type}){ 
+		super({type: type || 'component', name: name}); 
+		this._getEvent();
+		this._attachEvent();
+	}
+	_getEvent(){ this.event = this.setEvent(); }
+	_attachEvent(){
+		const elements = this.getElement();
+		for(let e_name in this.event){
+			for(let one of elements){
+				const e_elements = dom.getWithAttribute('event', e_name, one);
+				for(let each of e_elements) {
+					const e_type = each.getAttribute('on');
+					each.removeEventListener(e_type, this.event[e_name]);
+					each.addEventListener(e_type, this.event[e_name]);
+				}
+			}
+		}
+	}
+	_updateValue(){
+		const elements = this.getElement();
+		for(let val_name in this.value){
+			for(let one of elements){
+				const val_elements = dom.getWithAttribute('value', val_name, one);
+				for(let each of val_elements) each.innerHTML = this.value[val_name];
+			}
+		}
+	}
+	setEvent(){ return null; }
+	setValue(new_val){
+		for(let val_name in new_val) 
+			this.value[val_name] = new_val[val_name];
+		this._updateValue();
 	}
 }
+class Home extends Component{
+	constructor(){
+		super({name: 'home', type: 'page'});
+		this.setValue({a:1});
+	}
+	setEvent(){
+		return {
+			updateA: ()=>{
+				this.setValue({a: this.value.a +1})
+			}
+		}
+	}
+}
+new Home();
 
 class Loop extends Minif{
 	inner;
 	constructor({name}){
-		super({type: 'loop', name: name});
+		super({type: 'Loop', name: name});
 
 		this._storeInnerHTML();
 		this._removeInnerHTML();
 	}
 
 	_storeInnerHTML(){
-		this.inner = this.getElement().innerHTML;
+		const elements = this.getElement();
+		//TODO: store this.inner differently for different element
+		for(let one of elements) this.inner = one.innerHTML;
 	}
 	_removeInnerHTML(){
-		this.getElement().innerHTML = '';
+		const elements = this.getElement();
+		for(let one of elements) one.innerHTML = '';
 	}
 	_insertVariable(element, object){
 		for(let value_name in object)
@@ -93,8 +139,8 @@ class Loop extends Minif{
 		this._insertVariable(element, object);
 		this._replaceArgs(element, object);
 
-		const old = this.getElement();
-		old.innerHTML = old.innerHTML + element.innerHTML;
+		const elements = this.getElement();
+		for(let one of elements) one.innerHTML = one.innerHTML + element.innerHTML;
 	}
 
 	each(iteratee, callback){
@@ -109,48 +155,7 @@ class Loop extends Minif{
 		}
 	}
 }
-class Loop1 extends Loop{
-	constructor({name}){
-		super({name: name});
-
-		this.each({a:1, b:2}, (value, index)=>{
-			return { v: value, i: index };
-		});
-	}
-}
-const l = new Loop1({name: 'loop1'});
-/*
-class Template extends Minif{
-	constructor(name){
-		super({ type: 'template', name: name });
-	}
-}
-class Page extends Minif{
-	constructor(name){
-		super({ type: 'page', name: name });
-	}
-}
-class Component extends Minif{
-	constructor(name){
-		super({ type: 'component', name: name });
-	}
-}
-*/
-/*-----------------------*/
-
-/*
-class App{
-	constructor(){
-		const data = {
-			1: {
-				a: "a1",
-				b: "b1"
-			},
-			2: {
-				a: "a2",
-				b: "b2"
-			}
-		};
-	}
-}
-*/
+const l = new Loop({name: 'loop1'});
+l.each({a:1, b:2}, (value, index)=>{
+	return { v: value, i: index };
+});
