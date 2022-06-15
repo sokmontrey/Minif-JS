@@ -20,22 +20,21 @@
 			</div>
 		</template>
 
-		<page name='home' var='a b c d'>
+		<page name='home'>
 			<component use='topbar'></component>
 
 			<template name='recentContainer'>
 				<div class='panel'>
-					<p var='a'></p>
-					<p var='b'></p>
+					<p value='title'></p>
+					<p value='description'></p>
 				</div>
 			</template>
 
-			<loop var='data' each='data:one'>
-				<component
-					use='recentContainer' 
-					name='use1' 
-					var="a b"> 
-				</component>
+			<loop name='loop1' value='v'>
+			<!--<component use='recentContainer'></component>-->
+				Hello world 
+				<p value='index'></p>
+				<p value='v'></p>
 			</loop>
 		</page>
 
