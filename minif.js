@@ -260,6 +260,7 @@ class MinifControl{
 	}
 }
 
+/*
 class Home extends Component{
 	constructor(){
 		super();
@@ -319,3 +320,4 @@ class App{
 }
 
 new App();
+*/
