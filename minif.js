@@ -52,6 +52,7 @@ class Minif{
 		return dom.getWithAttribute(this.type, this.name);
 	}
 }
+
 class Component extends Minif{
 	value={}
 	event;
