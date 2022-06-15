@@ -106,23 +106,6 @@ class Component extends Minif{
 		if(this.is_render) this._updateValue();
 	}
 }
-class Home extends Component{
-	constructor(){
-		super();
-		this.setName('home');
-		this.setType('page');
-	}
-	load(){
-		this.setValue({a: this.value.a + 1})
-	}
-	setEvent(){
-		return {
-			updateA: ()=>{
-				this.setValue({a: this.value.a +1})
-			}
-		}
-	}
-}
 
 class Loop extends Minif{
 	inner;
@@ -261,6 +244,24 @@ class MinifControl{
 		this._replaceTemplate();
 		this._runComponent();
 		this._useArgsNoComponent();
+	}
+}
+
+class Home extends Component{
+	constructor(){
+		super();
+		this.setName('home');
+		this.setType('page');
+	}
+	load(){
+		this.setValue({a: this.value.a + 1})
+	}
+	setEvent(){
+		return {
+			updateA: ()=>{
+				this.setValue({a: this.value.a +1})
+			}
+		}
 	}
 }
 
