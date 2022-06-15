@@ -191,7 +191,11 @@ class MinifControl{
 	pages;
 	components;
 	loops;
-	constructor(){
+
+	current_page;
+	constructor(){ }
+	getCurrentElement(){
+		return dom.getWithAttribute('page', this.current_page)[0];
 	}
 	setLoops(loops={}){
 		this.loops = loops;
@@ -201,6 +205,7 @@ class MinifControl{
 	}
 	setPages(pages=[]){
 		this.pages = pages;
+		for(let name of pages) this.current_page = name;
 	}
 
 	_setNameAndRender(component){
@@ -219,7 +224,7 @@ class MinifControl{
 	//only if they are in the page that is rendering
 	//TODO: or just create a reset method that reset everything
 	_replaceTemplate(){
-		const all_user = dom.getWithAttribute('use');
+		const all_user = dom.getWithAttribute('use', this.page_element);
 		for(let one of all_user){
 			var template_name = one.getAttribute('use');
 			const template = dom.getWithAttribute('template', template_name);
@@ -227,7 +232,7 @@ class MinifControl{
 		}
 	}
 	_useArgsNoComponent(){
-		const all_args = dom.getWithAttribute('args');
+		const all_args = dom.getWithAttribute('args', this.page_element);
 		for(let one of all_args){
 			if(one.getAttribute('component')!==null) continue;
 			const value = one.getAttribute('args');
@@ -236,7 +241,22 @@ class MinifControl{
 				dom.setValue(one, v_name, obj[v_name]);
 		}
 	}
+	changePage(new_page){
+		this.current_page = new_page;
+		this.run();
+	}
+	_hideAllPage(){
+		const elements = dom.getWithAttribute('page');
+		for(let one of elements) dom.hideElement(one);
+	}
+	_showCurrentPage(){
+		const element = this.getCurrentElement();
+		dom.showElement(element);
+	}
 	run(){
+		this._hideAllPage();
+		this._showCurrentPage();
+
 		this._runLoop();
 		this._replaceTemplate();
 		this._runComponent();
