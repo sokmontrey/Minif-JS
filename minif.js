@@ -129,6 +129,7 @@ class Loop extends Minif{
 	inner;
 	iteratee;
 	callback;
+	iteration_type = 'each';
 	constructor({name}){
 		super({type: 'loop', name: name});
 
@@ -167,11 +168,9 @@ class Loop extends Minif{
 	each(iteratee, callback){
 		this.iteratee = iteratee;
 		this.callback = callback;
+		this.interation_type = 'each';
 	}
-	render(){
-		let iteratee = this.iteratee,
-			callback = this.callback;
-
+	_each(iteratee, callback){
 		if(typeof iteratee === 'object' && iteratee !== null){
 			for(let i in iteratee){
 				this._push(callback(iteratee[i], 
@@ -181,6 +180,11 @@ class Loop extends Minif{
 			for(let i=0; i<iteratee; i++)
 				this._push(callback(i, i));
 		}
+	}
+	render(){
+		//TODO: use switch
+		if(this.iteration_type === 'each')
+			this._each(iteratee, callback);
 	}
 }
 const l = new Loop({name: 'loop1'});
