@@ -1,3 +1,4 @@
+//TODO: set style from component state
 class DOM{
 	getWithClass(class_name, element=document){
 		return element.getElementsByClassName(class_name);
