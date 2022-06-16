@@ -45,9 +45,6 @@ class DOM{
 }
 const dom = new DOM();
 
-/*
- template -> replace
-*/
 class Minif{
 	type;
 	name;
@@ -281,75 +278,3 @@ class MinifControl{
 		this._useStyle();
 	}
 }
-
-const test_loop = new Loop();
-test_loop.setName('test_loop');
-test_loop.each(['red', 'blue', 'black', 'gray'], (value, index)=>{
-	return {color: value}
-})
-test_loop.render();
-
-const c = new MinifControl();
-c.run();
-
-/*
-class Home extends Component{
-	constructor(){
-		super();
-		this.setName('home');
-		this.setType('component');
-	}
-	load(){
-		this.setValue({a: this.value.a + 1})
-	}
-	setEvent(){
-		return {
-			updateA: ()=>{
-				this.setValue({a: this.value.a +1})
-			}
-		}
-	}
-}
-class Topbar extends Component{
-	changePage;
-	constructor({changePage}){
-		super();
-		this.setName('topbar');
-		this.setType('component');
-		this.changePage = changePage;
-	}
-	load(){
-		this.setValue({g: 100})
-	}
-	setEvent(){
-		return {
-			toHome: ()=>{this.changePage('home')},
-			toView: ()=>{this.changePage('view')},
-		}
-	}
-}
-
-class App{
-	constructor(){
-		const loop = new Loop();
-		loop.each({a:1, b:2, c:3}, (value, index)=>{
-			return { v: value, i: index };
-		});
-
-		const control = new MinifControl();
-		control.setPages(['home', 'view']);
-		control.setLoops({'loop1': loop});
-		control.setComponents({
-			'home': new Home(), 
-			'topbar': new Topbar({
-				changePage: (v)=>{
-					control.changePage(v);
-				}
-			})
-		});
-		control.run();
-	}
-}
-
-new App();
-*/
