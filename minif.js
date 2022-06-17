@@ -289,27 +289,3 @@ class MinifControl{
 	}
 }
 
-const l = new Loop();
-l.each(['Click1', "Click2", "Click3"], (v, index)=>{
-	return {
-		click_text: v,
-		$add: index+1
-	};
-})
-l.render();
-
-class Home extends Component{
-	constructor(){ super();
-		this.setName('home');
-		this.setType('component');
-	}
-	load(){
-		this.setValue({a: 1});
-	}
-	setEvent(){
-		return {updateA: ({add})=>{
-			this.setValue({a: this.value.a + add})
-		}}
-	}
-}
-new Home().render();
