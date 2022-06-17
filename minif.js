@@ -98,7 +98,13 @@ class Component extends Minif{
 				const e_elements = dom.getWithAttribute('event', e_name, one);
 				for(let each of e_elements) {
 					const e_type = each.getAttribute('on');
-					each.addEventListener(e_type, this.event[e_name]);
+					const e_args = each.getAttribute('event_args');
+					//TODO: create common method for convert props into JSON
+					//TODO: handle error with JSON 
+					const e_args_obj = JSON.parse(e_args);
+					each.addEventListener(e_type, ()=>{
+						this.event[e_name](e_args_obj || null);
+					});
 				}
 			}
 		}
@@ -278,3 +284,25 @@ class MinifControl{
 		this._useStyle();
 	}
 }
+
+const l = new Loop();
+l.each(['Click1', "Click2", "Click3"], (v, index)=>{
+	return {click_text: v};
+})
+l.render();
+
+class Home extends Component{
+	constructor(){ super();
+		this.setName('home');
+		this.setType('component');
+	}
+	load(){
+		this.setValue({a: 1});
+	}
+	setEvent(){
+		return {updateA: ({add})=>{
+			this.setValue({a: this.value.a + add})
+		}}
+	}
+}
+new Home().render();
