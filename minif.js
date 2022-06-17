@@ -22,7 +22,7 @@ class DOM{
 		const args = element.getAttribute(attr_type);
 		const object = JSON.parse(args);
 		for(let key in object){
-			object[key] = new_object[object[key]];
+			object[key] = new_object[object[key]] || object[key];
 		}
 		element.setAttribute(attr_type, JSON.stringify(object));
 	}
@@ -155,6 +155,9 @@ class Loop extends Minif{
 	_replaceStyle(element, object){
 		dom.replaceProperty(element, '_style', object);
 	}
+	_replaceEventArgs(element, object){
+		dom.replaceProperty(element, 'event_args', object);
+	}
 	_push(object){
 		const element = new DOMParser()
 			.parseFromString(`<div>${this.inner}</div>`, 'text/xml')
@@ -163,6 +166,7 @@ class Loop extends Minif{
 		this._insertVariable(element, object);
 		this._replaceArgs(element, object);
 		this._replaceStyle(element, object);
+		this._replaceEventArgs(element, object);
 
 		const elements = this.getElement();
 		for(let one of elements) one.innerHTML = one.innerHTML + element.innerHTML;
@@ -287,7 +291,10 @@ class MinifControl{
 
 const l = new Loop();
 l.each(['Click1', "Click2", "Click3"], (v, index)=>{
-	return {click_text: v};
+	return {
+		click_text: v,
+		$add: index+1
+	};
 })
 l.render();
 
