@@ -5,8 +5,12 @@
 	<body>
 		<div component='home'>
 			<p value='a'></p>
-			<button event='{"click": "updateA1"}'
-					event_args='{"updateA1": {"add": 123}}'>Click</button>
+			<div loop='loop'>
+				<div>
+					<button event='{"click": "updateA1"}'
+			 event_args='{"updateA1": {"add": "vv"}}'>Click</button>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

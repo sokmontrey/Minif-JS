@@ -22,7 +22,12 @@ class DOM{
 		const args = element.getAttribute(attr_type);
 		const object = JSON.parse(args);
 		for(let key in object){
-			object[key] = new_object[object[key]] || object[key];
+			if(typeof object[key] !== "object")
+				object[key] = new_object[object[key]] || object[key];
+			else{
+				for(let key2 in object[key])
+					object[key][key2] = new_object[object[key][key2]] || object[key][key2];
+			}
 		}
 		element.setAttribute(attr_type, JSON.stringify(object));
 	}
@@ -96,7 +101,7 @@ class Component extends Minif{
 		for(let one of elements){
 			const e_element = dom.getWithAttribute('event', null, one);
 			for(let each of e_element){
-				var e = each.getAttribute('event'),
+				const e = each.getAttribute('event'),
 					e_obj = JSON.parse(e),
 					e_args = each.getAttribute('event_args'),
 					e_args_obj = JSON.parse(e_args);
@@ -293,19 +298,26 @@ class MinifControl{
 	}
 }
 
+const l = new Loop();
+l.setName('loop');
+l.each(3, (value, index)=>{
+	return {vv: value + 1}
+})
+l.render();
+
 class Home extends Component{
 	constructor(){
 		super();
-		this.setName('home');
 		this.setType('component');
+		this.setName('home');
 	}
 	load(){
-		this.setValue({a: 1});
+		this.setValue({a: 1})
 	}
 	setEvent(){
 		return {
 			updateA1: ({add})=>{
-				this.setValue({a: this.value.a +add});
+				this.setValue({a: this.value.a + add});
 			}
 		}
 	}
