@@ -94,17 +94,13 @@ class Component extends Minif{
 	_attachEvent(){
 		const elements = this.getElement();
 		for(let one of elements){
-			for(let e_name in this.event){
-				const e_elements = dom.getWithAttribute('event', e_name, one);
-				for(let each of e_elements) {
-					const e_type = each.getAttribute('on');
-					const e_args = each.getAttribute('event_args');
-					//TODO: create common method for convert props into JSON
-					//TODO: handle error with JSON 
-					const e_args_obj = JSON.parse(e_args);
-					each.addEventListener(e_type, ()=>{
-						this.event[e_name](e_args_obj || null);
-					});
+			const e_element = dom.getWithAttribute('event', null, one);
+			for(let each of e_element){
+				const e = each.getAttribute('event');
+				const obj = JSON.parse(e);
+				for(let type in obj){
+					const listener = this.event[obj[type]];
+					listener ? each.addEventListener(type, listener) : null;
 				}
 			}
 		}
@@ -289,3 +285,24 @@ class MinifControl{
 	}
 }
 
+class Home extends Component{
+	constructor(){
+		super();
+		this.setName('home');
+		this.setType('component');
+	}
+	load(){
+		this.setValue({a: 1});
+	}
+	setEvent(){
+		return {
+			updateA1: ()=>{
+				this.setValue({a: this.value.a +1});
+			},
+			updateA2: ()=>{
+				this.setValue({a: this.value.a +10});
+			}
+		}
+	}
+}
+new Home().render();
