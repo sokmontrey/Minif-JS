@@ -5,7 +5,8 @@
 	<body>
 		<div component='home'>
 			<p value='a'></p>
-			<button event='{"click": "updateA1", "mouseover": "updateA2"}'>Click</button>
+			<button event='{"click": "updateA1"}'
+					event_args='{"updateA1": {"add": 123}}'>Click</button>
 		</div>
 	</body>
 </html>

@@ -96,11 +96,19 @@ class Component extends Minif{
 		for(let one of elements){
 			const e_element = dom.getWithAttribute('event', null, one);
 			for(let each of e_element){
-				const e = each.getAttribute('event');
-				const obj = JSON.parse(e);
-				for(let type in obj){
-					const listener = this.event[obj[type]];
-					listener ? each.addEventListener(type, listener) : null;
+				var e = each.getAttribute('event'),
+					e_obj = JSON.parse(e),
+					e_args = each.getAttribute('event_args'),
+					e_args_obj = JSON.parse(e_args);
+
+				for(let type in e_obj){
+					const listener = this.event[e_obj[type]];
+					listener 
+						? each.addEventListener(type, ()=>{
+							listener(e_args_obj[e_obj[type]]);
+						}) 
+						: null;
+						//TODO: create error handling 
 				}
 			}
 		}
@@ -296,11 +304,8 @@ class Home extends Component{
 	}
 	setEvent(){
 		return {
-			updateA1: ()=>{
-				this.setValue({a: this.value.a +1});
-			},
-			updateA2: ()=>{
-				this.setValue({a: this.value.a +10});
+			updateA1: ({add})=>{
+				this.setValue({a: this.value.a +add});
 			}
 		}
 	}
