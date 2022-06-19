@@ -278,9 +278,11 @@ class MinifControl{
 				dom.setValue(one, v_name, obj[v_name]);
 		}
 	}
-	changePage(new_page){
+	changePage(new_page, props=null){
 		this.current_page = new_page;
 		this.run();
+		if(props===null) return;
+		this.components[this.current_page].setValue(props);
 	}
 	_hideAllPage(){
 		const elements = dom.getWithAttribute('page');
