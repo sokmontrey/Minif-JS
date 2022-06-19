@@ -143,7 +143,6 @@ class Loop extends Minif{
 	constructor(){
 		super();
 		this.setType('loop');
-		this._storeInnerHTML();
 	}
 
 	_storeInnerHTML(){
@@ -198,7 +197,12 @@ class Loop extends Minif{
 				this._push(callback(i, i));
 		}
 	}
+	is_stored_inner_html = false;
 	render(){
+		if(!this.is_stored_inner_html){
+			this._storeInnerHTML();
+			this.is_stored_inner_html = true;
+		}
 		this._removeInnerHTML();
 		//TODO: use switch
 		if(this.iteration_type === 'each')
