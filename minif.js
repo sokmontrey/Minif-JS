@@ -108,9 +108,12 @@ class Component extends Minif{
 
 				for(let type in e_obj){
 					const listener = this.event[e_obj[type]];
+					const args = e_args!==null
+						?e_args_obj[e_obj[type]]
+						:null;
 					listener 
 						? each.addEventListener(type, ()=>{
-							listener(e_args_obj[e_obj[type]]);
+							listener(args);
 						}) 
 						: null;
 						//TODO: create error handling 
