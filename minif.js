@@ -143,6 +143,7 @@ class Loop extends Minif{
 	constructor(){
 		super();
 		this.setType('loop');
+		this._storeInnerHTML();
 	}
 
 	_storeInnerHTML(){
@@ -198,7 +199,6 @@ class Loop extends Minif{
 		}
 	}
 	render(){
-		this._storeInnerHTML();
 		this._removeInnerHTML();
 		//TODO: use switch
 		if(this.iteration_type === 'each')
@@ -218,9 +218,13 @@ class MinifControl{
 	}
 	setLoops(loops={}){
 		this.loops = loops;
+		for(let name in this.loops)
+			this.loops[name].setName(name);
 	}
 	setComponents(components=[]){
 		this.components = components;
+		for(let name in this.components)
+			this.components[name].setName(name);
 	}
 	setPages(pages=[]){
 		this.pages = pages;
@@ -232,13 +236,11 @@ class MinifControl{
 
 	_runLoop(){
 		for(let name in this.loops){
-			this.loops[name].setName(name);
 			this.loops[name].render();
 		}
 	}
 	_runComponent(){
 		for(let name in this.components){
-			this.components[name].setName(name);
 			this.components[name].render();
 		}
 	}
@@ -298,28 +300,3 @@ class MinifControl{
 	}
 }
 
-const l = new Loop();
-l.setName('loop');
-l.each(3, (value, index)=>{
-	return {vv: value + 1}
-})
-l.render();
-
-class Home extends Component{
-	constructor(){
-		super();
-		this.setType('component');
-		this.setName('home');
-	}
-	load(){
-		this.setValue({a: 1})
-	}
-	setEvent(){
-		return {
-			updateA1: ({add})=>{
-				this.setValue({a: this.value.a + add});
-			}
-		}
-	}
-}
-new Home().render();
