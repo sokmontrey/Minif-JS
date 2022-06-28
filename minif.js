@@ -1,4 +1,4 @@
-const dom = (function(){
+const DOM = (function(){
 	return {
 		getWithClass:(class_name, element=document)=>{
 			return element.getElementsByClassName(class_name);
@@ -51,7 +51,7 @@ const dom = (function(){
 })();
 
 //test
-const r = dom.getWithAttribute('reactive')[0];
+const r = DOM.getWithAttribute('reactive')[0];
 let inn = r.innerHTML;
 const m = inn.match(/\(\(.*?\)\)/g);
 for(let one of m){
@@ -71,7 +71,7 @@ class Reactive{
 		parent_element=document
 	}){
 		this.name = name;
-		this.element = dom.getWithAttribute
+		this.element = DOM.getWithAttribute
 	}
 }
 
