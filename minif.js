@@ -50,19 +50,6 @@ const DOM = (function(){
 	}
 })();
 
-/*
-//test
-const r = DOM.getWithAttribute('reactive')[0];
-let inn = r.innerHTML;
-const m = inn.match(/\(\(.*?\)\)/g);
-for(let one of m){
-	const key = one.match(/[^(  )]/g);
-	inn = inn.replace(one, 
-		`<span reactive='${key}'></span>`);
-}
-r.innerHTML = inn;
-*/
-
 const ReactiveController = (function(){
 	function insert_span(){
 		const all_reactive = DOM.getWithAttribute('reactive');
@@ -138,7 +125,7 @@ class ReactivePublisher{
 }
 
 class Reactive{
-	_element; _name; _value;
+	_elements; _name; _value;
 	constructor(
 		name=null, 
 		initial_value=null,
@@ -148,6 +135,7 @@ class Reactive{
 	){
 		if(!name) return;
 		this._name = name;
+		this._parent_element = parent_element;
 
 		this._publisher = new ReactivePublisher();
 
@@ -161,18 +149,23 @@ class Reactive{
 			this._subscriber = null;
 		}
 	}
-
 	setValue(value){
 		this._value = value;
 		this._publisher.publishUpdate(value);
-		for(let one of this._element) one.innerHTML = value;
+		this._render();
+		return this;
+	}
+	attach(){
+		this._elements = DOM.getWithAttribute(
+			'reactive', 
+			this._name, 
+			this._parent_element
+		);
 		return this;
 	}
 
-	attach(name, parent_element=document){
-		this._name = name;
-		this._element = DOM.getWithAttribute('reactive', name, parent_element);
-		return this;
+	_render(){
+		for(let one of this._elements) one.innerHTML = this._value;
 	}
 
 	get name(){return this._name}
@@ -181,8 +174,5 @@ class Reactive{
 	get subscriber(){return this._subscriber}
 	get update_function(){return this._update_function}
 }
-
-const a = new Reactive('a', 2);
-const b = new Reactive('b', 5)
-const c = new Reactive('c', 2, ({a, b})=>a+b, [a, b]);
-a.setValue(1);
+const a = new Reactive('a', 3);
+const b = new Reactive('b', 4);

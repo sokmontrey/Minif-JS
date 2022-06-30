@@ -4,7 +4,10 @@
 	</head>
 	<body>
 		<div id='app'>
-			<p reactive>Hello world: ((a)), ((b)), ((c))</p>
+			<p reactive>Hello world: ((a))</p>
+			<h1 reactive>Hello ((b)) world</h1>
+			<button event='{"click": "updateA"}' 
+				event_args='{"updateA": 3}'>Click</button>
 		</div>
 	</body>
 </html>
