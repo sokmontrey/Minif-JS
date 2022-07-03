@@ -13,6 +13,13 @@ const DOM = (function(){
 		getWithTag:(tag_name, element=document)=>{
 			return element.getElementsByTagName(tag_name);
 		},
+		getAllAttribute:(element=document)=>{
+			const attrs = {};
+			element.getAttributeNames().forEach((attr_name)=>{
+				return attrs[attr_name] = element.getAttribute(attr_name);
+			})
+			return attrs;
+		},
 		getAttribute:(element, attribute_name)=>{
 			return element.getAttribute(attribute_name).split(' ');
 		},
@@ -51,7 +58,7 @@ const DOM = (function(){
 })();
 
 const ReactiveController = (function(){
-	function insert_span(){
+	function insertSpan(){
 		const all_reactive = DOM.getWithAttribute('reactive');
 		for(let one of all_reactive){
 			let innerHTML = one.innerHTML;
@@ -63,10 +70,31 @@ const ReactiveController = (function(){
 			one.innerHTML = innerHTML;
 		}
 	}
-	insert_span();
+	insertSpan();
 
 	return ;
 })();
+/*
+const ReactiveController = (function(){
+	const reactive_element = {};
+
+	function findAllReactiveElement(){
+		return elements = DOM.getWithAttribute('reactive')
+	}
+	function extractAllReactiveElement(){
+		const elements = findAllReactiveElement();
+		for(let each of elements){
+			each.attr
+		}
+	}
+	function render(){
+
+	}
+	extractAllReactiveElement();
+	return ;
+})();
+*/
+
 //TODO: use Observer pattern
 class ReactiveSubscriber{
 	_reactive;
@@ -174,5 +202,3 @@ class Reactive{
 	get subscriber(){return this._subscriber}
 	get update_function(){return this._update_function}
 }
-const a = new Reactive('a', 3);
-const b = new Reactive('b', 4);
