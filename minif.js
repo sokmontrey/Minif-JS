@@ -57,43 +57,71 @@ const DOM = (function(){
 	}
 })();
 
-const ReactiveController = (function(){
-	function insertSpan(){
-		const all_reactive = DOM.getWithAttribute('reactive');
-		for(let one of all_reactive){
-			let innerHTML = one.innerHTML;
-			const match = innerHTML.match(/\(\(.*?\)\)/g);
-			for(let each of match){
-				const reactive_name = each.match(/[^(  )]/g);
-				innerHTML = innerHTML.replace(each, `<span reactive='${reactive_name}'></span>`);
+const DSM = (function(){
+	const _DSM_DOM_element = {};
+
+	function something(){
+		const DSM_elements = DOM.getWithAttribute('dsm');
+		for(let i=0; i<DSM_elements.length; i++){
+			const each = DSM_elements[i];
+			const attr = {};
+			const inner = [];
+
+			const each_attrs = DOM.getAllAttribute(each);
+			for(let attr_name in each_attrs){
+				const attr_value= each_attrs[attr_name]
+				if(!attr_value) continue;
+				const splited = attr_value.split(/(\(\(.*?\)\))/g);
+				if(splited.length <=1) continue;
+				const value = [];
+				for(let index=0; index<splited.length; index++){
+					if(!splited[index]) continue;
+					if((index+1) % 2 == 0){
+						const something = splited[index]
+							.replace(/[( )]/g, '')
+							.split(':');
+						value.push({
+							value: something[0],
+							is_variable: true,
+							update_function: something[1] || null
+						})
+					} else{
+						value.push({
+							value:splited[index],
+							is_variable: false
+						})
+					}
+				}
+				attr[attr_name] = value;
 			}
-			one.innerHTML = innerHTML;
+			const inner_value = each.innerHTML;
+			if(!inner_value) continue;
+			const splited = inner_value.split(/(\(\(.*?\)\))/g);
+			if(splited.length <=1) continue;
+			for(let index=0; index<splited.length; index++){
+				if(!splited[index]) continue;
+				if((index+1) % 2 == 0){
+					const something = splited[index]
+						.replace(/[( )]/g, '')
+						.split(':');
+					inner.push({
+						value: something[0],
+						is_variable: true,
+						update_function: something[1] || null
+					})
+				} else{
+					inner.push({
+						value:splited[index],
+						is_variable: false
+					})
+				}
+			}
+			console.log({inner: inner, attr:attr})
 		}
 	}
-	insertSpan();
-
-	return ;
+	something();
+	return {}
 })();
-/*
-const ReactiveController = (function(){
-	const reactive_element = {};
-
-	function findAllReactiveElement(){
-		return elements = DOM.getWithAttribute('reactive')
-	}
-	function extractAllReactiveElement(){
-		const elements = findAllReactiveElement();
-		for(let each of elements){
-			each.attr
-		}
-	}
-	function render(){
-
-	}
-	extractAllReactiveElement();
-	return ;
-})();
-*/
 
 //TODO: use Observer pattern
 class ReactiveSubscriber{
