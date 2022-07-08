@@ -58,65 +58,63 @@ const DOM = (function(){
 })();
 
 const DSM = (function(){
+
+	function extract_DSM_variable(string){
+		if(!string) return null;
+		//syntax_split: 
+		//	"Hello world ((a))" => ["Hello world ", "((a))"]
+		const syntax_split = string.split(/(\(\(.*?\)\))/g);
+		//if there is no "(())" to split
+		//length will be 1
+		if(syntax_split.length <= 1) return null;
+		const result = [];
+		for(let i=0; i<syntax_split.length; i++){
+			if(!syntax_split[i]) continue;
+			//after the split
+			//"(())" will always be in i+1 even number
+			//ex: "a ((a))" => ["a ", "((a))"]
+			//"((a))" => ["", "((a))", ""]
+			const is_variable = (i+1)%2===0; 
+			//remove "(())" and space
+			//in case there is update_function
+			//ex: ((a: (v)=>v+1)),
+			//split them
+			const v_split = is_variable
+				? syntax_split[i].replace(/[( )]/g, '')
+					.split(':')
+				: null;
+
+			const value = v_split ? v_split[0] : syntax_split[i];
+			const update_func = v_split ? v_split[1] || null : null;
+			result.push({
+				value: value,
+				is_variable: is_variable,
+				update_function: update_func
+			})
+		}
+		//TODO: return DSM_variable name
+		return result;
+	}
+
 	const _DSM_DOM_element = {};
 
 	function something(){
 		const DSM_elements = DOM.getWithAttribute('dsm');
 		for(let i=0; i<DSM_elements.length; i++){
 			const each = DSM_elements[i];
-			const attr = {};
-			const inner = [];
+			_DSM_DOM_element[i] = {};
+			_DSM_DOM_element[i]['attr'] = {};
 
 			const each_attrs = DOM.getAllAttribute(each);
 			for(let attr_name in each_attrs){
-				const attr_value= each_attrs[attr_name]
-				if(!attr_value) continue;
-				const splited = attr_value.split(/(\(\(.*?\)\))/g);
-				if(splited.length <=1) continue;
-				const value = [];
-				for(let index=0; index<splited.length; index++){
-					if(!splited[index]) continue;
-					if((index+1) % 2 == 0){
-						const something = splited[index]
-							.replace(/[( )]/g, '')
-							.split(':');
-						value.push({
-							value: something[0],
-							is_variable: true,
-							update_function: something[1] || null
-						})
-					} else{
-						value.push({
-							value:splited[index],
-							is_variable: false
-						})
-					}
-				}
-				attr[attr_name] = value;
+				const attr_variable = extract_DSM_variable(each_attrs[attr_name])
+				if(!attr_variable) continue;
+				_DSM_DOM_element[i]['attr'][attr_name] = attr_variable;
 			}
-			const inner_value = each.innerHTML;
-			if(!inner_value) continue;
-			const splited = inner_value.split(/(\(\(.*?\)\))/g);
-			if(splited.length <=1) continue;
-			for(let index=0; index<splited.length; index++){
-				if(!splited[index]) continue;
-				if((index+1) % 2 == 0){
-					const something = splited[index]
-						.replace(/[( )]/g, '')
-						.split(':');
-					inner.push({
-						value: something[0],
-						is_variable: true,
-						update_function: something[1] || null
-					})
-				} else{
-					inner.push({
-						value:splited[index],
-						is_variable: false
-					})
-				}
-			}
-			console.log({inner: inner, attr:attr})
+
+			const inner_variable = extract_DSM_variable(each.innerHTML);
+			if(!inner_variable) continue;
+			_DSM_DOM_element[i]['inner'] = inner_variable;
 		}
 	}
 	something();
