@@ -98,26 +98,28 @@ const DSM = (function(){
 
 	const _DSM_DOM_element = {};
 
-	function something(){
+	function extract_DSM_element(){
 		const DSM_elements = DOM.getWithAttribute('dsm');
 		for(let i=0; i<DSM_elements.length; i++){
 			const each = DSM_elements[i];
-			_DSM_DOM_element[i] = {};
-			_DSM_DOM_element[i]['attr'] = {};
 
+			const attr = {};
 			const each_attrs = DOM.getAllAttribute(each);
 			for(let attr_name in each_attrs){
 				const attr_variable = extract_DSM_variable(each_attrs[attr_name])
 				if(!attr_variable) continue;
-				_DSM_DOM_element[i]['attr'][attr_name] = attr_variable;
+				attr[attr_name] = attr_variable;
 			}
 
-			const inner_variable = extract_DSM_variable(each.innerHTML);
-			if(!inner_variable) continue;
-			_DSM_DOM_element[i]['inner'] = inner_variable;
+			const inner = extract_DSM_variable(each.innerHTML);
+			_DSM_DOM_element[i] = {
+				attribute: attr,
+				innerHTML: inner
+			}
 		}
 	}
-	something();
+
+	extract_DSM_element();
 	return {}
 })();
 
