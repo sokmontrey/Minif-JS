@@ -57,16 +57,16 @@ const DOM = (function(){
 	}
 })();
 
-const DSM = (function(){
-
-	function extract_DSM_variable(string){
-		if(!string) return null;
+class DSMString{
+	DSMString = null;
+	constructor(string){
+		if(!string) return;
 		//syntax_split: 
 		//	"Hello world ((a))" => ["Hello world ", "((a))"]
 		const syntax_split = string.split(/(\(\(.*?\)\))/g);
 		//if there is no "(())" to split
 		//length will be 1
-		if(syntax_split.length <= 1) return null;
+		if(syntax_split.length <= 1) return ;
 		const result = [];
 		for(let i=0; i<syntax_split.length; i++){
 			if(!syntax_split[i]) continue;
@@ -92,35 +92,52 @@ const DSM = (function(){
 				update_function: update_func
 			})
 		}
-		//TODO: return DSM_variable name
+		this.DSMString = result;
+	}
+	isNull(){return !this.DSMString}
+	string(variable_obj={}){
+		var result = "";
+		for(let each of this.DSMString){
+			result += each['is_variable']
+				? variable_obj[each['value']] || ''
+				: each['value'] || '';
+		}
 		return result;
 	}
-
-	const _DSM_DOM_element = {};
-
-	function extract_DSM_element(){
-		const DSM_elements = DOM.getWithAttribute('dsm');
-		for(let i=0; i<DSM_elements.length; i++){
-			const each = DSM_elements[i];
+}
+class DSMElement{
+	DSMElement = {};
+	constructor(parent_dom_element=document){
+		const DSM_DOM_elements = DOM.getWithAttribute('dsm', null, parent_dom_element);
+		for(let i=0; i<DSM_DOM_elements.length; i++){
+			const each = DSM_DOM_elements[i];
 
 			const attr = {};
 			const each_attrs = DOM.getAllAttribute(each);
 			for(let attr_name in each_attrs){
-				const attr_variable = extract_DSM_variable(each_attrs[attr_name])
-				if(!attr_variable) continue;
-				attr[attr_name] = attr_variable;
+				const attr_dsmstring = new DSMString(each_attrs[attr_name]);
+				if(attr_dsmstring.isNull()) continue;
+				attr[attr_name] = attr_dsmstring;
 			}
-
-			const inner = extract_DSM_variable(each.innerHTML);
-			_DSM_DOM_element[i] = {
+			
+			const inner_dsmstring = new DSMString(each.innerHTML);
+			this.DSMElement[i] = {
 				attribute: attr,
-				innerHTML: inner,
-				element: each
+				innerHTML: inner_dsmstring.isNull() ? null : inner_dsmstring,
+				element: each,
 			}
 		}
 	}
+}
+class DSMVaribale{
+	DSMVariable = {};
+	constructor(DSMElement){
+		//TODO
+	}
+}
 
-	extract_DSM_element();
+const DSM = (function(){
+	const _DSM_element = new DSMElement(document);
 	return {}
 })();
 
