@@ -114,7 +114,8 @@ const DSM = (function(){
 			const inner = extract_DSM_variable(each.innerHTML);
 			_DSM_DOM_element[i] = {
 				attribute: attr,
-				innerHTML: inner
+				innerHTML: inner,
+				element: each
 			}
 		}
 	}
