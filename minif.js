@@ -108,6 +108,9 @@ class DSMString{
 class DSMElement{
 	DSMElement = {};
 	constructor(parent_dom_element=document){
+		this.extract(parent_dom_element=document);
+	}
+	extract(parent_dom_element=document){
 		const DSM_DOM_elements = DOM.getWithAttribute('dsm', null, parent_dom_element);
 		for(let i=0; i<DSM_DOM_elements.length; i++){
 			const each = DSM_DOM_elements[i];
@@ -121,6 +124,8 @@ class DSMElement{
 			}
 			
 			const inner_dsmstring = new DSMString(each.innerHTML);
+			//TODO use different unique name for element
+			//to prevent in case of re-extract
 			this.DSMElement[i] = {
 				attribute: attr,
 				innerHTML: inner_dsmstring.isNull() ? null : inner_dsmstring,
@@ -128,16 +133,27 @@ class DSMElement{
 			}
 		}
 	}
+	get all(){
+		return this.DSMElement;
+	}
 }
-class DSMVaribale{
+class DSMVariable{
 	DSMVariable = {};
 	constructor(DSMElement){
-		//TODO
+		const all_element = DSMElement.all;
+		console.log(all_element)
+
+		/* (Irelevent here) convert string to a function with one arg
+		const s = "(v)=>v+2";
+		const f = new Function('value', `return (${s})(value)`);
+		console.log(f(5));
+		*/
 	}
 }
 
 const DSM = (function(){
 	const _DSM_element = new DSMElement(document);
+	const _DSM_variable = new DSMVariable(_DSM_element);
 	return {}
 })();
 
