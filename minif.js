@@ -1,3 +1,4 @@
+//TODO add doc comment for every methods
 const DOM = (function(){
 	return {
 		getWithClass:(class_name, element=document)=>{
@@ -82,10 +83,14 @@ class DSMString{
 				? this.splitFirstColon(syntax_split[i])
 				: null;
 
-			//TODO remove (())
-			console.log(v_split)
-			const value = v_split ? v_split[0] : syntax_split[i];
-			const update_func = v_split ? v_split[1] || null : null;
+			//remove "((" & spaces & "))" if variable
+			const value = v_split 
+				? v_split[0].replace(/[( )]/g,'') 
+				: syntax_split[i];
+			//remove "))" from update_function
+			const update_func = v_split&&v_split[1] 
+				? v_split[1].replace(/\)\)/g, '') || null 
+				: null;
 			result.push({
 				value: value,
 				is_variable: is_variable,
