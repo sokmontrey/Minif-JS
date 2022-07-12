@@ -120,15 +120,16 @@ class DSMString{
 		return result;
 	}
 	useUpdateFunction(func_def, value){
-		console.log(func_def)
 		const func = new Function('value', `return (${func_def})(value)`);
-		return func(value);
+		return func(value) || '';
 	}
-	string(variable_obj={}){
+	string(variable_obj=null){
 		var result = "";
 		for(let each of this.DSMString){
 			if(each['is_variable']){
-				const value = variable_obj[each['value']] || ''
+				const value = variable_obj
+					? variable_obj[each['value']] || ''
+					: undefined
 				result += each['update_function'] 
 					? this.useUpdateFunction(each['update_function'], value)
 					: value
@@ -141,6 +142,7 @@ class DSMElement{
 	DSMElement = {};
 	constructor(parent_dom_element=document){
 		this.extract(parent_dom_element=document);
+		this.cleanAllString();
 	}
 	extract(parent_dom_element=document){
 		const DSM_DOM_elements = DOM.getWithAttribute('dsm', null, parent_dom_element);
@@ -165,15 +167,26 @@ class DSMElement{
 			}
 		}
 	}
-	updateAttrValue(ele_name, attr_name, variable_obj={}){
+	cleanAllString(){
+		for(let name in this.DSMElement){
+			this.updateInnerValue(name);
+			for(let attr_name in this.DSMElement[name]['attribute']){
+				this.updateAttrValue(name, attr_name);
+			} 
+		}
+	}
+	updateAttrValue(ele_name, attr_name, variable_obj=null){
 		//TODO: handle undefined dsm string
 		const dsm_element = this.DSMElement[ele_name];
 		const dsm_string = dsm_element['attribute'][attr_name];
-		dsm_element['element'][attr_name] = dsm_string.string(variable_obj);
+		if(!dsm_string) return;
+		const string = dsm_string.string(variable_obj);
+		dsm_element['element'].setAttribute(attr_name, string)
 	}
-	updateInnerValue(ele_name, variable_obj={}){
+	updateInnerValue(ele_name, variable_obj=null){
 		const dsm_element = this.DSMElement[ele_name];
 		const dsm_string = dsm_element['innerHTML'];
+		if(!dsm_string) return;
 		dsm_element['element'].innerHTML = dsm_string.string(variable_obj);
 	}
 	get all(){
@@ -184,7 +197,6 @@ class DSMVariable{
 	DSMVariable = {};
 	constructor(DSMElement){
 		const all_element = DSMElement.all;
-		console.log(all_element[1]['innerHTML'].string({a:1}))
 
 		/* (Irelevent here) convert string to a function with one arg
 		const s = "(v)=>v+2";

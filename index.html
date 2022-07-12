@@ -4,11 +4,12 @@
 	</head>
 	<body>
 		<div id='app'>
-			<h1 dsm>((b))</h1>
+			<h1 dsm>((b:()=>5))</h1>
+			<p dsm>Hello world</p>
 			<button event='{"click": "updateA"}' 
-				event_args='{"updateA": ((a))}' 
-			    style='padding: ((a:(v)=>1))px;' 
-		   dsm>Click ((a:(v)=&gt;v + 10))</button>
+		   event_args='{"updateA": ((a:(v=10)=>v))}' 
+			    style='padding: ((a:(v=1)=>v))px;' 
+		   dsm>Click ((a:(v=1)=&gt;v + 10))</button>
 		</div>
 	</body>
 </html>
