@@ -88,6 +88,7 @@ class DSMString{
 				? v_split[0].replace(/[( )]/g,'') 
 				: syntax_split[i];
 			//remove "))" from update_function
+			//and apply decodeHTMLEntity to decode "& > < ' " character
 			const update_func = v_split&&v_split[1] 
 				? this.decodeHTMLEntity(v_split[1].replace(/\)\)/g, '')) || null 
 				: null;
