@@ -89,7 +89,7 @@ class DSMString{
 				: syntax_split[i];
 			//remove "))" from update_function
 			const update_func = v_split&&v_split[1] 
-				? v_split[1].replace(/\)\)/g, '') || null 
+				? this.decodeHTMLEntity(v_split[1].replace(/\)\)/g, '')) || null 
 				: null;
 			result.push({
 				value: value,
@@ -100,6 +100,11 @@ class DSMString{
 		this.DSMString = result;
 	}
 	isNull(){return !this.DSMString}
+	decodeHTMLEntity(string){
+		const txt = document.createElement('textarea');
+		txt.innerHTML = string;
+		return txt.value;
+	}
 	splitFirstColon(string){
 		let index = null;
 		for(let i=0; i<string.length; i++){
