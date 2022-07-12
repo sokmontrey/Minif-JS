@@ -75,15 +75,15 @@ class DSMString{
 			//ex: "a ((a))" => ["a ", "((a))"]
 			//"((a))" => ["", "((a))", ""]
 			const is_variable = (i+1)%2===0; 
-			//remove "(())" and space
 			//in case there is update_function
 			//ex: ((a: (v)=>v+1)),
-			//split them
+			//split them by the first ":"
 			const v_split = is_variable
-				? syntax_split[i].replace(/[( )]/g, '')
-					.split(':')
+				? this.splitFirstColon(syntax_split[i])
 				: null;
 
+			//TODO remove (())
+			console.log(v_split)
 			const value = v_split ? v_split[0] : syntax_split[i];
 			const update_func = v_split ? v_split[1] || null : null;
 			result.push({
@@ -95,12 +95,33 @@ class DSMString{
 		this.DSMString = result;
 	}
 	isNull(){return !this.DSMString}
+	splitFirstColon(string){
+		let index = null;
+		for(let i=0; i<string.length; i++){
+			if(string[i] === ':'){
+				index = i;
+				break;
+			}
+		}
+		const result = index 
+			? [string.slice(0, index), string.slice(index+1)]
+			: [string];
+		return result;
+	}
+	useUpdateFunction(func_def, value){
+		console.log(func_def)
+		const func = new Function('value', `return (${func_def})(value)`);
+		return func(value);
+	}
 	string(variable_obj={}){
 		var result = "";
 		for(let each of this.DSMString){
-			result += each['is_variable']
-				? variable_obj[each['value']] || ''
-				: each['value'] || '';
+			if(each['is_variable']){
+				const value = variable_obj[each['value']] || ''
+				result += each['update_function'] 
+					? this.useUpdateFunction(each['update_function'], value)
+					: value
+			}else result += each['value'] || '';
 		}
 		return result;
 	}
@@ -141,7 +162,7 @@ class DSMVariable{
 	DSMVariable = {};
 	constructor(DSMElement){
 		const all_element = DSMElement.all;
-		console.log(all_element)
+		console.log(all_element[1]['innerHTML'].string({a:1}))
 
 		/* (Irelevent here) convert string to a function with one arg
 		const s = "(v)=>v+2";
