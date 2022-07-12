@@ -189,8 +189,12 @@ class DSMElement{
 		}
 	}
 }
+//TODO: create this
+//note: dsm_variable also similar to dsm_element too
+//storing only one value and dsm_element for one specific variable
+class DSMVariable{}
 
-const DSM = (function(){
+const DSM = (()=>{
 	const _dsm_element = {};
 	function _extract_dsm_element(){
 		const dsm_dom_element = DOM.getWithAttribute('dsm', null, document);
