@@ -138,63 +138,6 @@ class DSMString{
 		return result;
 	}
 }
-/*
-class DSMElement{
-	DSMElement = {};
-	constructor(parent_dom_element=document){
-		this.extract(parent_dom_element);
-		this.cleanAllString();
-	}
-	extract(parent_dom_element=document){
-		const DSM_DOM_elements = DOM.getWithAttribute('dsm', null, parent_dom_element);
-		for(let i=0; i<DSM_DOM_elements.length; i++){
-			const each = DSM_DOM_elements[i];
-
-			const attr = {};
-			const each_attrs = DOM.getAllAttribute(each);
-			for(let attr_name in each_attrs){
-				const attr_dsmstring = new DSMString(each_attrs[attr_name]);
-				if(attr_dsmstring.isNull()) continue;
-				attr[attr_name] = attr_dsmstring;
-			}
-			
-			const inner_dsmstring = new DSMString(each.innerHTML);
-			//TODO use different unique name for element
-			//to prevent in case of re-extract
-			this.DSMElement[i] = {
-				attribute: attr,
-				innerHTML: inner_dsmstring.isNull() ? null : inner_dsmstring,
-				element: each,
-			}
-		}
-	}
-	cleanAllString(){
-		for(let name in this.DSMElement){
-			this.updateInnerValue(name);
-			for(let attr_name in this.DSMElement[name]['attribute']){
-				this.updateAttrValue(name, attr_name);
-			} 
-		}
-	}
-	updateAttrValue(ele_name, attr_name, variable_obj=null){
-		//TODO: handle undefined dsm string
-		const dsm_element = this.DSMElement[ele_name];
-		const dsm_string = dsm_element['attribute'][attr_name];
-		if(!dsm_string) return;
-		const string = dsm_string.string(variable_obj);
-		dsm_element['element'].setAttribute(attr_name, string)
-	}
-	updateInnerValue(ele_name, variable_obj=null){
-		const dsm_element = this.DSMElement[ele_name];
-		const dsm_string = dsm_element['innerHTML'];
-		if(!dsm_string) return;
-		dsm_element['element'].innerHTML = dsm_string.string(variable_obj);
-	}
-	get all(){
-		return this.DSMElement;
-	}
-}
-*/
 class DSMElement{
 	name=null;
 	dom_element=null;
@@ -248,7 +191,16 @@ class DSMElement{
 }
 
 const DSM = (function(){
-	const _DSM_element = new DSMElement(document);
+	const _dsm_element = {};
+	function _extract_dsm_element(){
+		const dsm_dom_element = DOM.getWithAttribute('dsm', null, document);
+		for(let i=0; i<dsm_dom_element.length; i++){
+			const name = i;
+			const element = dsm_dom_element[i]
+			_dsm_element[name] = new DSMElement(name, element);
+		}
+	}
+	_extract_dsm_element();
 	return {}
 })();
 
