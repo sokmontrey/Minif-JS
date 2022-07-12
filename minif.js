@@ -165,6 +165,17 @@ class DSMElement{
 			}
 		}
 	}
+	updateAttrValue(ele_name, attr_name, variable_obj={}){
+		//TODO: handle undefined dsm string
+		const dsm_element = this.DSMElement[ele_name];
+		const dsm_string = dsm_element['attribute'][attr_name];
+		dsm_element['element'][attr_name] = dsm_string.string(variable_obj);
+	}
+	updateInnerValue(ele_name, variable_obj={}){
+		const dsm_element = this.DSMElement[ele_name];
+		const dsm_string = dsm_element['innerHTML'];
+		dsm_element['element'].innerHTML = dsm_string.string(variable_obj);
+	}
 	get all(){
 		return this.DSMElement;
 	}
