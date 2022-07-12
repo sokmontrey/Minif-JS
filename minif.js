@@ -138,10 +138,11 @@ class DSMString{
 		return result;
 	}
 }
+/*
 class DSMElement{
 	DSMElement = {};
 	constructor(parent_dom_element=document){
-		this.extract(parent_dom_element=document);
+		this.extract(parent_dom_element);
 		this.cleanAllString();
 	}
 	extract(parent_dom_element=document){
@@ -193,22 +194,61 @@ class DSMElement{
 		return this.DSMElement;
 	}
 }
-class DSMVariable{
-	DSMVariable = {};
-	constructor(DSMElement){
-		const all_element = DSMElement.all;
-
-		/* (Irelevent here) convert string to a function with one arg
-		const s = "(v)=>v+2";
-		const f = new Function('value', `return (${s})(value)`);
-		console.log(f(5));
-		*/
+*/
+class DSMElement{
+	name=null;
+	dom_element=null;
+	attribute={};
+	innerHTML=null;
+	constructor(name, dom_element){
+		this.name = name;
+		this.dom_element = dom_element;
+		this._extractAttribute(dom_element);
+		this._extractInnerHTML(dom_element);
+		this._cleanDSMString();
+	}
+	_extractAttribute(element){
+		const element_attrs = DOM.getAllAttribute(element);
+		for(let attr_name in element_attrs){
+			const attr_dsmstring = new DSMString(element_attrs[attr_name]);
+			if(attr_dsmstring.isNull()) continue;
+			this.attribute[attr_name] = attr_dsmstring;
+		}
+	}
+	_extractInnerHTML(element){
+		const inner_dsmstring = new DSMString(element.innerHTML);
+		this.innerHTML = inner_dsmstring.isNull() ? null : inner_dsmstring;
+	}
+	_cleanDSMString(){
+		this.updateInnerValue(null);
+		for(let attr_name in this.attribute){
+			this.updateAttrValue(attr_name, null);
+		} 
+	}
+	updateAttrValue(attr_name, variable_obj=null){
+		//TODO: handle undefined dsm string
+		const dsm_string = this.attribute[attr_name];
+		if(!dsm_string) return;
+		const string = dsm_string.string(variable_obj);
+		this.dom_element.setAttribute(attr_name, string)
+	}
+	updateInnerValue(variable_obj=null){
+		const dsm_string = this.innerHTML;
+		if(!dsm_string) return;
+		this.dom_element.innerHTML = dsm_string.string(variable_obj);
+	}
+	get all(){
+		return {
+			attribute: this.attribute,
+			innerHTML: this.innerHTML,
+			dom_element: this.dom_element,
+			name: this.name
+		}
 	}
 }
 
 const DSM = (function(){
 	const _DSM_element = new DSMElement(document);
-	const _DSM_variable = new DSMVariable(_DSM_element);
 	return {}
 })();
 
