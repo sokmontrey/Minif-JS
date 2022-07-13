@@ -137,6 +137,13 @@ class DSMString{
 		}
 		return result;
 	}
+	variable(){
+		const result = [];
+		for(let each of this.DSMString){
+			if(each['is_variable']) result.push(each['value']);
+		}
+		return result;
+	}
 }
 class DSMElement{
 	name=null;
@@ -180,6 +187,9 @@ class DSMElement{
 		if(!dsm_string) return;
 		this.dom_element.innerHTML = dsm_string.string(variable_obj);
 	}
+	get name(){return this.name}
+	get attribute(){return this.attribute} 
+	get innerHTML(){return this.innerHTML}
 	get all(){
 		return {
 			attribute: this.attribute,
@@ -192,7 +202,39 @@ class DSMElement{
 //TODO: create this
 //note: dsm_variable also similar to dsm_element too
 //storing only one value and dsm_element for one specific variable
-class DSMVariable{}
+class DSMVariable{
+	name=null;
+	value=null;
+	//TODO: method that can remove element from a variable
+	dsm_element={};
+	constructor(name){
+		this.name = name;
+	}
+	addElement(dsm_element){
+		const element_name = dsm_element.name;
+		if(this.dsm_element[element_name]) return;
+		this.dsm_element[element_name] = {
+			attr: [],
+			inner: false,
+			dsm_element: dsm_element,
+		};
+	}
+	addElementAttr(element_name, attr_name){
+		this.dsm_element[element_name]['attr'].push(attr_name);
+	}
+	setElementInner(element_name, hasInner=false){
+		this.dsm_element[element_name]['inner'] = hasInner;
+	}
+	//TODO: updateValue
+	get value(){return this.value;}
+	get all(){
+		return {
+			name: this.name,
+			value: this.value,
+			dsm_element: this.dsm_element
+		}
+	}
+}
 
 const DSM = (()=>{
 	const _dsm_element = {};
@@ -204,8 +246,39 @@ const DSM = (()=>{
 			_dsm_element[name] = new DSMElement(name, element);
 		}
 	}
+	const _dsm_variable = {};
+	function _extract_dsm_variable(dsm_element){
+		for(let ele_name in dsm_element){
+			const attr = dsm_element[ele_name].attribute;
+			for(let attr_name in attr){
+				const var_names = attr[attr_name].variable();
+				//TODO refactor this
+				for(let name of var_names){
+					if(!_dsm_variable[name]) 
+						_dsm_variable[name] = new DSMVariable(name);
+					_dsm_variable[name].addElement(dsm_element[ele_name]);
+					_dsm_variable[name].addElementAttr(ele_name, attr_name);
+				}
+			}
+
+			const inner = dsm_element[ele_name].innerHTML;
+			const var_names = inner ? inner.variable() : null;
+			if(!var_names) continue;
+			//TODO: and this
+			for(let name of var_names){
+				if(!_dsm_variable[name]) 
+					_dsm_variable[name] = new DSMVariable(name);
+				_dsm_variable[name].addElement(dsm_element[ele_name]);
+				_dsm_variable[name].setElementInner(ele_name, true);
+			}
+		}
+	}
 	_extract_dsm_element();
-	return {}
+	_extract_dsm_variable(_dsm_element);
+	console.log(_dsm_variable)
+	return {
+		element: _dsm_element
+	}
 })();
 
 //TODO: use Observer pattern
