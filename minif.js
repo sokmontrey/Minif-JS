@@ -199,6 +199,7 @@ class DSMElement{
 		}
 	}
 }
+/*
 class DSMVariable{
 	name=null;
 	value=null;
@@ -245,8 +246,8 @@ class DSMVariable{
 		}
 	}
 }
+*/
 const DSM = (()=>{
-	const _dsm_variable = {};
 	const _dsm_element = {};
 	function _extract_dsm_element(){
 		const dsm_dom_element = DOM.getWithAttribute('dsm', null, document);
@@ -256,6 +257,8 @@ const DSM = (()=>{
 			_dsm_element[name] = new DSMElement(name, element);
 		}
 	}
+	/*
+	const _dsm_variable = {};
 	function _subscribe_to_variable(variables, dsm_element, attr_name=null){
 		for(let name of variables){
 			if(!_dsm_variable[name]) 
@@ -281,9 +284,10 @@ const DSM = (()=>{
 			_subscribe_to_variable(var_names, dsm_element[ele_name]);
 		}
 	}
-	_extract_dsm_element();
 	_extract_dsm_variable(_dsm_element);
-	_dsm_variable['a'].updateValue(10);
+	*/
+
+	_extract_dsm_element();
 	return {
 		element: _dsm_element
 	}
