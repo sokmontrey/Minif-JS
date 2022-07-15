@@ -212,12 +212,12 @@ class DSMElement{
 }
 const DSM =(function(){
 	function extract_dsm_element(parent_element){
-		const dsm_element = {};
+		const dsm_element = [];
 		const dsm_dom_ele = DOM.getWithAttribute('dsm', null, parent_element);
 		for(let i=0; i<dsm_dom_ele.length; i++){
 			const name = i;
 			const element = dsm_dom_ele[i]
-			dsm_element[name] = new DSMElement(name, element);
+			dsm_element.push(new DSMElement(name, element));
 		}
 		return dsm_element;
 	}
@@ -225,21 +225,25 @@ const DSM =(function(){
 
 	function getChildOf(parent_element=document){
 		const result = [];
-		for(let name in dsm_element){
-			const element = dsm_element[name];
+		for(let element of dsm_element){
 			const dom_element = element.dom_element;
 			if(DOM.checkDescendant(parent_element, dom_element))
 				result.push(element);
 		}
 		return result;
 	}
+	function getAllElement(){
+		const result = [];
+		for(let element of dsm_element){
+			result.push(element);
+		}
+		return result;
+	}
 	return {
 		getChildOf: getChildOf,
-		all: dsm_element
+		getAllElement: getAllElement 
 	}
 })();
-
-console.log(DSM.getChildOf(DOM.getWithId('app')))
 
 //TODO: use Observer pattern
 class ReactiveSubscriber{
