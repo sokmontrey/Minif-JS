@@ -210,9 +210,36 @@ class DSMElement{
 		}
 	}
 }
-class DSMVariable{
-	//TODO
-	constructor(){}
+class DSMVariableMap{
+	//DSMVariableMap use to map variable-name 
+	//to DSMElements that has that variable in it
+	name=null;
+	/* {
+		dsm_element: element,
+		attribute: [],
+		isInnerHTML: false,
+	} */
+	dsm_element = {};
+	constructor(name){
+		this.name = name;
+	}
+	addElement(element_name, isInnerHTML=false, attribute={}){
+		if(this.dsm_element[element_name]) return ;
+		this.dsm_element[element_name] = {
+			isInnerHTML: isInnerHTML,
+			attribute: attribute
+		}
+	}
+	setIsInnerHTML(element_name, isInnerHTML=null){
+		if(isInnerHTML === null) return;
+		const element = this.dsm_element[element_name];
+		//error handling
+		element.isInnerHTML = isInnerHTML;
+	}
+	addAttribute(element_name, new_attribute){
+		const element = this.dsm_element[element_name]
+		element['atttribute'].push(new_attribute);
+	}
 }
 const DSM = (function(){
 	function extract_dsm_element(parent_element){
