@@ -6,12 +6,11 @@
 		<div id='app'>
 			<h1 dsm>((b:(v=5)=&gt;v))</h1>
 			<p dsm>Hello ((b:(v=5)=&gt;v))world</p>
-
-			<button event='{"click": "updateA"}' 
-				event_args='{"updateA": ((a:(v=10)=>v))}' 
-				style='padding: ((a:(v=1)=>v))px;' 
-				dsm>Click ((a:(v=1)=&gt;v + 10))</button>
 		</div>
+		<button event='{"click": "updateA"}' 
+			event_args='{"updateA": ((a:(v=10)=>v))}' 
+			style='padding: ((a:(v=1)=>v))px;' 
+			dsm>Click ((a:(v=1)=&gt;v + 10))</button>
 
 	</body>
 </html>

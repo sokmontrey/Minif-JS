@@ -24,6 +24,16 @@ const DOM = (function(){
 		getAttribute:(element, attribute_name)=>{
 			return element.getAttribute(attribute_name).split(' ');
 		},
+		checkDescendant:(parent, child)=>{
+			let node = child.parentNode;
+			while (node) {
+				if (node === parent) {
+					return true;
+				}
+				node = node.parentNode;
+			}
+			return false;
+		},
 		replaceProperty:(parent=document,attr_type, new_object)=>{
 			const element = this.getWithAttribute(attr_type, null, parent)[0];
 			if(element === undefined) return;
@@ -190,6 +200,7 @@ class DSMElement{
 	get name(){return this.name}
 	get attribute(){return this.attribute} 
 	get innerHTML(){return this.innerHTML}
+	get dom_element(){return this.dom_element}
 	get all(){
 		return {
 			attribute: this.attribute,
@@ -212,11 +223,20 @@ class DSM {
 			this.dsm_element[name] = new DSMElement(name, element);
 		}
 	}
-	get element(){return this.dsm_element}
+	get all(){return this.dsm_element}
+	childOf(parent_element=document){
+		const result = [];
+		for(let name in this.dsm_element){
+			const element = this.dsm_element[name];
+			const dom_element = element.dom_element;
+			if(DOM.checkDescendant(parent_element, dom_element))
+				result.push(element);
+		}
+		return result;
+	}
 }
-//PROBLEM: initialize global DSM make innerHTML and attr turn into normal string
 const DSMGlobal = new DSM(document);
-const DSMLocal = new DSM(DOM.getWithId('app'));
+console.log(DSMGlobal.all)
 
 //TODO: use Observer pattern
 class ReactiveSubscriber{
