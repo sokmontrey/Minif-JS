@@ -199,101 +199,24 @@ class DSMElement{
 		}
 	}
 }
-/*
-class DSMVariable{
-	name=null;
-	value=null;
-	//TODO: method that can remove element from a variable
-	subscriber_element={};
-	constructor(name){
-		this.name = name;
-	}
-	addElement(dsm_element){
-		const element_name = dsm_element.name;
-		if(this.subscriber_element[element_name]) return;
-		this.subscriber_element[element_name] = {
-			attr: [],
-			inner: false,
-			dsm_element: dsm_element,
-		};
-	}
-	addElementAttr(element_name, attr_name){
-		this.subscriber_element[element_name]['attr'].push(attr_name);
-	}
-	setElementInner(element_name, hasInner=false){
-		this.subscriber_element[element_name]['inner'] = hasInner;
-	}
-	updateValue(new_value){
-		this.value = new_value;
-		this.notifyElement();
-	}
-	notifyElement(){
-		for(let name in this.subscriber_element){
-			const subscriber = this.subscriber_element[name];
-			const dsm_element = subscriber['dsm_element'];
-			//inner
-			//TODO: problem: when updating Element we need to know all the variables
-			//aka variable obj
-			//but if we update from inside we cannot get global var_obj
-		}
-	}
-	get value(){return this.value;}
-	get all(){
-		return {
-			name: this.name,
-			value: this.value,
-			dsm_element: this.dsm_element
-		}
-	}
-}
-*/
 class DSM {
-	dsm_element = {};
+	dsm_element={};
 	constructor(parent_element=document){
-		this.dsm_element = this._extract_dsm_element(parent_element);
+		this.extract_dsm_element(parent_element);
 	}
-	_extract_dsm_element(parent_element){
-		const dsm_elements = {};
+	extract_dsm_element(parent_element){
 		const dsm_dom_element = DOM.getWithAttribute('dsm', null, parent_element);
 		for(let i=0; i<dsm_dom_element.length; i++){
 			const name = i;
 			const element = dsm_dom_element[i]
-			dsm_elements[name] = new DSMElement(name, element);
-		}
-		return dsm_elements;
-	}
-	/*
-	const _dsm_variable = {};
-	function _subscribe_to_variable(variables, dsm_element, attr_name=null){
-		for(let name of variables){
-			if(!_dsm_variable[name]) 
-				_dsm_variable[name] = new DSMVariable(name);
-			_dsm_variable[name].addElement(dsm_element);
-			if(attr_name)
-				_dsm_variable[name].addElementAttr(dsm_element.name, attr_name);
-			else
-				_dsm_variable[name].setElementInner(dsm_element.name, true);
+			this.dsm_element[name] = new DSMElement(name, element);
 		}
 	}
-	function _extract_dsm_variable(dsm_element){
-		for(let ele_name in dsm_element){
-			const attr = dsm_element[ele_name].attribute;
-			for(let attr_name in attr){
-				const var_names = attr[attr_name].variable();
-				_subscribe_to_variable(var_names, dsm_element[ele_name], attr_name);
-			}
-
-			const inner = dsm_element[ele_name].innerHTML;
-			const var_names = inner ? inner.variable() : null;
-			if(!var_names) continue;
-			_subscribe_to_variable(var_names, dsm_element[ele_name]);
-		}
-	}
-	_extract_dsm_variable(_dsm_element);
-	*/
+	get element(){return this.dsm_element}
 }
-const DSMGlobal = new DSM();
-console.log(DSMGlobal)
+//PROBLEM: initialize global DSM make innerHTML and attr turn into normal string
+const DSMGlobal = new DSM(document);
+const DSMLocal = new DSM(DOM.getWithId('app'));
 
 //TODO: use Observer pattern
 class ReactiveSubscriber{
