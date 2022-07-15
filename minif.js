@@ -210,7 +210,11 @@ class DSMElement{
 		}
 	}
 }
-const DSM =(function(){
+class DSMVariable{
+	//TODO
+	constructor(){}
+}
+const DSM = (function(){
 	function extract_dsm_element(parent_element){
 		const dsm_element = [];
 		const dsm_dom_ele = DOM.getWithAttribute('dsm', null, parent_element);
@@ -223,25 +227,23 @@ const DSM =(function(){
 	}
 	const dsm_element = extract_dsm_element(document);
 
-	function getChildOf(parent_element=document){
-		const result = [];
-		for(let element of dsm_element){
-			const dom_element = element.dom_element;
-			if(DOM.checkDescendant(parent_element, dom_element))
-				result.push(element);
-		}
-		return result;
-	}
-	function getAllElement(){
-		const result = [];
-		for(let element of dsm_element){
-			result.push(element);
-		}
-		return result;
-	}
 	return {
-		getChildOf: getChildOf,
-		getAllElement: getAllElement 
+		getChildOf: (parent_dom)=>{
+			const result = [];
+			for(let element of dsm_element){
+				const dom_element = element.dom_element;
+				if(DOM.checkDescendant(parent_dom, dom_element))
+					result.push(element);
+			}
+			return result;
+		},
+		getAllElement: ()=>{
+			const result = [];
+			for(let element of dsm_element){
+				result.push(element);
+			}
+			return result;
+		}
 	}
 })();
 
