@@ -210,33 +210,36 @@ class DSMElement{
 		}
 	}
 }
-class DSM {
-	dsm_element={};
-	constructor(parent_element=document){
-		this.extract_dsm_element(parent_element);
-	}
-	extract_dsm_element(parent_element){
-		const dsm_dom_element = DOM.getWithAttribute('dsm', null, parent_element);
-		for(let i=0; i<dsm_dom_element.length; i++){
+const DSM =(function(){
+	function extract_dsm_element(parent_element){
+		const dsm_element = {};
+		const dsm_dom_ele = DOM.getWithAttribute('dsm', null, parent_element);
+		for(let i=0; i<dsm_dom_ele.length; i++){
 			const name = i;
-			const element = dsm_dom_element[i]
-			this.dsm_element[name] = new DSMElement(name, element);
+			const element = dsm_dom_ele[i]
+			dsm_element[name] = new DSMElement(name, element);
 		}
+		return dsm_element;
 	}
-	get all(){return this.dsm_element}
-	childOf(parent_element=document){
+	const dsm_element = extract_dsm_element(document);
+
+	function getChildOf(parent_element=document){
 		const result = [];
-		for(let name in this.dsm_element){
-			const element = this.dsm_element[name];
+		for(let name in dsm_element){
+			const element = dsm_element[name];
 			const dom_element = element.dom_element;
 			if(DOM.checkDescendant(parent_element, dom_element))
 				result.push(element);
 		}
 		return result;
 	}
-}
-const DSMGlobal = new DSM(document);
-console.log(DSMGlobal.all)
+	return {
+		getChildOf: getChildOf,
+		all: dsm_element
+	}
+})();
+
+console.log(DSM.getChildOf(DOM.getWithId('app')))
 
 //TODO: use Observer pattern
 class ReactiveSubscriber{
