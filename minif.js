@@ -247,15 +247,20 @@ class DSMVariable{
 	}
 }
 */
-const DSM = (()=>{
-	const _dsm_element = {};
-	function _extract_dsm_element(){
-		const dsm_dom_element = DOM.getWithAttribute('dsm', null, document);
+class DSM {
+	dsm_element = {};
+	constructor(parent_element=document){
+		this.dsm_element = this._extract_dsm_element(parent_element);
+	}
+	_extract_dsm_element(parent_element){
+		const dsm_elements = {};
+		const dsm_dom_element = DOM.getWithAttribute('dsm', null, parent_element);
 		for(let i=0; i<dsm_dom_element.length; i++){
 			const name = i;
 			const element = dsm_dom_element[i]
-			_dsm_element[name] = new DSMElement(name, element);
+			dsm_elements[name] = new DSMElement(name, element);
 		}
+		return dsm_elements;
 	}
 	/*
 	const _dsm_variable = {};
@@ -286,12 +291,9 @@ const DSM = (()=>{
 	}
 	_extract_dsm_variable(_dsm_element);
 	*/
-
-	_extract_dsm_element();
-	return {
-		element: _dsm_element
-	}
-})();
+}
+const DSMGlobal = new DSM();
+console.log(DSMGlobal)
 
 //TODO: use Observer pattern
 class ReactiveSubscriber{
