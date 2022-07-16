@@ -166,21 +166,22 @@ class DSMElement{
 	isChildOf(parent_element=document){
 		return DOM.checkDescendant(parent_element, this.dom_element)
 	}
-	updateAttrValue(attr_name, variable=this.variable){
+	updateAttrValue(attr_names=[], variable=this.variable){
 		//TODO: handle undefined dsm string
-		const dsm_string = this.attribute[attr_name];
-		if(!dsm_string) return;
-		const string = dsm_string.string(variable);
-		this.dom_element.setAttribute(attr_name, string)
+		for(let attr_name of attr_names){
+			const dsm_string = this.attribute[attr_name];
+			if(!dsm_string) return;
+			const string = dsm_string.string(variable);
+			this.dom_element.setAttribute(attr_name, string)
+		}
 	}
 	updateInnerValue(variable=this.variable){
 		const dsm_string = this.innerHTML;
 		if(!dsm_string) return;
 		this.dom_element.innerHTML = dsm_string.string(variable);
 	}
-	updateVariableValue(update_obj){
-		for(let var_name in update_obj)
-			this.variable[var_name] = update_obj[var_name]; 
+	updateVariable(var_name, value){
+		this.variable[var_name] = value;
 	}
 	updateDSMString(isInnerHTML=false, attribute={}){
 		if(isInnerHTML) this.updateInnerValue();
@@ -238,6 +239,7 @@ class DSMVariableMap{
 		const element = this.dsm_element[element_name]
 		element['attribute'].push(new_attribute);
 	}
+	get element(){return this.dsm_element}
 }
 const DSM = (function(){
 	const dsm_element = [];
@@ -299,8 +301,23 @@ const DSM = (function(){
 			}
 			return result;
 		},
+		updateVariable:(variable_obj={}, parent_dom=null)=>{
+			for(let var_name in variable_obj){
+				const map = dsm_variable_map[var_name];
+				if(!map) continue; 
+				const element = map.element;
+				for(let ele_name in element){
+					const each = element[ele_name];
+					console.log(each)
+					const dsm_element = each['dsm_element'];
+					dsm_element.updateVariable(var_name, variable_obj[var_name]);
+					dsm_element.updateDSMString(each['isInnerHTML'], each['attribute']);
+				}
+			}
+		}
 	}
 })();
+DSM.updateVariable({a: 123, b:11});
 
 class ReactiveSubscriber{
 	_reactive;
