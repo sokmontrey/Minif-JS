@@ -308,13 +308,14 @@ const DSM = (function(){
 				const element = map.element;
 				for(let ele_name in element){
 					const each = element[ele_name];
-					console.log(each)
 					const dsm_element = each['dsm_element'];
-					dsm_element.updateVariable(var_name, variable_obj[var_name]);
-					dsm_element.updateDSMString(each['isInnerHTML'], each['attribute']);
+					if(!parent_dom || dsm_element.isChildOf(parent_dom)){
+						dsm_element.updateVariable(var_name, variable_obj[var_name]);
+						dsm_element.updateDSMString(each['isInnerHTML'], each['attribute']);
+					}
 				}
 			}
-		}
+		},
 	}
 })();
 DSM.updateVariable({a: 123, b:11});
