@@ -192,6 +192,9 @@ class DSMElement{
 		const string = dsm_string.string(variable_obj);
 		this.dom_element.setAttribute(attr_name, string)
 	}
+	isChildOf(parent_element=document){
+		return DOM.checkDescendant(parent_element, this.dom_element)
+	}
 	updateInnerValue(variable_obj=null){
 		const dsm_string = this.innerHTML;
 		if(!dsm_string) return;
@@ -284,15 +287,15 @@ const DSM = (function(){
 		}
 	}
 	extract_dsm_variable(dsm_element);
-	console.log(dsm_variable_map);
 
 	return {
-		getChildOf: (parent_dom)=>{
+		getAllMap:()=>{
+			return dsm_variable_map;
+		},
+		getElementChildOf: (parent_dom)=>{
 			const result = [];
 			for(let element of dsm_element){
-				const dom_element = element.dom_element;
-				if(DOM.checkDescendant(parent_dom, dom_element))
-					result.push(element);
+				if(element.isChildOf(parent_dom)) result.push(element);
 			}
 			return result;
 		},
