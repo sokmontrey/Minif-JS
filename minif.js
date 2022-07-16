@@ -223,14 +223,16 @@ class DSMVariableMap{
 	constructor(name){
 		this.name = name;
 	}
-	addElement(element_name, isInnerHTML=false, attribute={}){
-		if(this.dsm_element[element_name]) return ;
+	addElement(dsm_element){
+		const element_name = dsm_element.name;
+		if(this.dsm_element[element_name]) return;
 		this.dsm_element[element_name] = {
-			isInnerHTML: isInnerHTML,
-			attribute: attribute
+			dsm_element: dsm_element,
+			isInnerHTML: false,
+			attribute: []
 		}
 	}
-	setIsInnerHTML(element_name, isInnerHTML=null){
+	setIsInnerHTML(element_name, isInnerHTML=false){
 		if(isInnerHTML === null) return;
 		const element = this.dsm_element[element_name];
 		//error handling
@@ -238,21 +240,51 @@ class DSMVariableMap{
 	}
 	addAttribute(element_name, new_attribute){
 		const element = this.dsm_element[element_name]
-		element['atttribute'].push(new_attribute);
+		element['attribute'].push(new_attribute);
 	}
 }
 const DSM = (function(){
+	const dsm_element = [];
 	function extract_dsm_element(parent_element){
-		const dsm_element = [];
 		const dsm_dom_ele = DOM.getWithAttribute('dsm', null, parent_element);
 		for(let i=0; i<dsm_dom_ele.length; i++){
 			const name = i;
-			const element = dsm_dom_ele[i]
+			const element = dsm_dom_ele[i];
 			dsm_element.push(new DSMElement(name, element));
 		}
-		return dsm_element;
 	}
-	const dsm_element = extract_dsm_element(document);
+	extract_dsm_element(document);
+
+	const dsm_variable_map = {};
+	function add_variable(vars=[], element, isInner=false, attr_name=null){
+		for(let var_name of vars){
+			if(!dsm_variable_map[var_name])
+				dsm_variable_map[var_name] = new DSMVariableMap(var_name); 
+			
+			const var_map = dsm_variable_map[var_name];
+			var_map.addElement(element);
+			isInner 
+				? var_map.setIsInnerHTML(element.name, true) 
+				: attr_name 
+					? var_map.addAttribute(element.name, attr_name) 
+					: null;
+		}
+	}
+	function extract_dsm_variable(element){
+		for(let each of element){
+			for(let attr_name in each.attribute){
+				const attr_dsm_string = each.attribute[attr_name];
+				const attr_vars = attr_dsm_string.variable();
+				add_variable(attr_vars, each, false, attr_name);
+			}
+			const inner_dsm_string = each.innerHTML;
+			const inner_vars = inner_dsm_string 
+				? inner_dsm_string.variable() : null;
+			add_variable(inner_vars, each, true)
+		}
+	}
+	extract_dsm_variable(dsm_element);
+	console.log(dsm_variable_map);
 
 	return {
 		getChildOf: (parent_dom)=>{
@@ -274,7 +306,6 @@ const DSM = (function(){
 	}
 })();
 
-//TODO: use Observer pattern
 class ReactiveSubscriber{
 	_reactive;
 	_publisher;
