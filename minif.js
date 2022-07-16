@@ -34,29 +34,6 @@ const DOM = (function(){
 			}
 			return false;
 		},
-		replaceProperty:(parent=document,attr_type, new_object)=>{
-			const element = this.getWithAttribute(attr_type, null, parent)[0];
-			if(element === undefined) return;
-			const args = element.getAttribute(attr_type);
-			const object = JSON.parse(args);
-			for(let key in object){
-				if(typeof object[key] !== "object")
-					object[key] = new_object[object[key]] || object[key];
-				else{
-					for(let key2 in object[key])
-						object[key][key2] = new_object[object[key][key2]] || object[key][key2];
-				}
-			}
-			element.setAttribute(attr_type, JSON.stringify(object));
-		},
-		setValue:(parent=document,attr_name, value)=>{
-			const elements = this.getWithAttribute('value', attr_name, parent);
-			for(let one of elements) one.innerHTML = value;
-		},
-		setStyle:(element=null, style_name, value)=>{
-			if(element===null) return;
-			element.style[style_name] = value;
-		},
 		hideElement: (element)=>{
 			element.style.visibility = 'hidden';
 			element.style.display = 'none';
