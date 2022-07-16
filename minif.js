@@ -110,13 +110,13 @@ class DSMString{
 		const func = new Function('value', `return (${func_def})(value)`);
 		return func(value) || '';
 	}
-	string(variable_obj=null){
+	string(value_obj={}){
 		var result = "";
 		for(let each of this.DSMString){
 			if(each['is_variable']){
-				const value = variable_obj
-					? variable_obj[each['value']] || ''
-					: undefined
+				const value = value_obj 
+					? value_obj[each['value']]
+					: undefined 
 				result += each['update_function'] 
 					? this.useUpdateFunction(each['update_function'], value)
 					: value
@@ -137,6 +137,7 @@ class DSMElement{
 	dom_element=null;
 	attribute={};
 	innerHTML=null;
+	variable={};
 	constructor(name, dom_element){
 		this.name = name;
 		this.dom_element = dom_element;
@@ -162,20 +163,35 @@ class DSMElement{
 			this.updateAttrValue(attr_name, null);
 		} 
 	}
-	updateAttrValue(attr_name, variable_obj=null){
-		//TODO: handle undefined dsm string
-		const dsm_string = this.attribute[attr_name];
-		if(!dsm_string) return;
-		const string = dsm_string.string(variable_obj);
-		this.dom_element.setAttribute(attr_name, string)
-	}
 	isChildOf(parent_element=document){
 		return DOM.checkDescendant(parent_element, this.dom_element)
 	}
-	updateInnerValue(variable_obj=null){
+	updateAttrValue(attr_name, variable=this.variable){
+		//TODO: handle undefined dsm string
+		const dsm_string = this.attribute[attr_name];
+		if(!dsm_string) return;
+		const string = dsm_string.string(variable);
+		this.dom_element.setAttribute(attr_name, string)
+	}
+	updateInnerValue(variable=this.variable){
 		const dsm_string = this.innerHTML;
 		if(!dsm_string) return;
-		this.dom_element.innerHTML = dsm_string.string(variable_obj);
+		this.dom_element.innerHTML = dsm_string.string(variable);
+	}
+	updateVariableValue(update_obj){
+		for(let var_name in update_obj)
+			this.variable[var_name] = update_obj[var_name]; 
+	}
+	updateDSMString(isInnerHTML=false, attribute={}){
+		if(isInnerHTML) this.updateInnerValue();
+		for(let attr_name in attribute)
+			this.updateAttrValue(attr_name);
+	}
+	//might be bad for performent reason
+	updateAllDSMString(){
+		this.updateInnerValue();
+		for(let attr_name in this.attribute)
+			this.updateAttrValue(attr_name);
 	}
 	get name(){return this.name}
 	get attribute(){return this.attribute} 
@@ -282,7 +298,7 @@ const DSM = (function(){
 				result.push(element);
 			}
 			return result;
-		}
+		},
 	}
 })();
 
