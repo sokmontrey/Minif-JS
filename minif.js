@@ -7,6 +7,13 @@ const DOM = (function(){
 		getWithId:(id, element=document)=>{
 			return element.getElementById(id);
 		},
+		g:(string, element=document)=>{
+			const splited = string.split(/([.#])/g);
+			if(splited[1] === '.')
+				return element.getElementsByClassName(splited[2]);
+			else if(splited[1] === '#')
+				return element.getElementById(splited[2]);
+		},
 		getWithAttribute:(attr_name, value=null, element=document)=>{
 			const attr = `[${attr_name}${value!==null?`="${value}"`:''}]`;
 			return element.querySelectorAll(attr);
@@ -418,8 +425,17 @@ class Reactive{
 	get update_function(){return this._update_function}
 }
 
+//TODO add Reactive Doc
+/*
+ * Reactive: example
 const a = new Reactive('a', 10);
 const b = new Reactive('b', 10);
 const c = new Reactive('c', a.value + b.value, [a, b], ({a, b})=>a+b);
 
-
+DOM.g('#button').addEventListener('click', ()=>{
+	a.update(a.value +1);
+})
+DOM.g('#button').addEventListener('mouseover', ()=>{
+	a.update(a.value -1);
+})
+*/

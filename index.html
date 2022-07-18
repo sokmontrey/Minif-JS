@@ -3,15 +3,17 @@
 		<script defer src='minif.js'></script>
 	</head>
 	<body>
-		<div id='app'>
-			<h1 dsm>((b:(v=5)=&gt;v))</h1>
-			<p dsm>Hello ((b:(v=5)=&gt;v))world</p>
-		</div>
-		<button event='{"click": "updateA"}' 
+
+		<!-- Reactive Example
+		<h1 dsm>((b:(v=5)=&gt;v))</h1>
+		<p dsm>Hello ((b:(v=5)=&gt;v))world</p>
+		<button id='button' 
+		    event='{"click": "updateA"}' 
 			event_args='{"updateA": ((a:(v=10)=>v))}' 
 			style='padding: ((a:(v=1)=>v))px;' 
 			dsm>Click ((a:(v=1)=&gt;v + 10))</button>
 		<h2 dsm>((c))</h2>
+		-->
 	</body>
 </html>
 
