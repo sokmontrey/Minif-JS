@@ -308,12 +308,7 @@ const DSM = (function(){
 					dsm_element.updateDSMString(each['isInnerHTML'], each['attribute']);
 				}
 			}
-		},
-		updateMultipleVariable:(variable_obj={}, parent_dom=null)=>{
-			for(let var_name in variable_obj){
-				this.updateVariable(var_name, variable_obj[var_name]);
-			}
-		},
+		}
 	}
 })();
 
@@ -422,3 +417,9 @@ class Reactive{
 	get subscriber(){return this._subscriber}
 	get update_function(){return this._update_function}
 }
+
+const a = new Reactive('a', 10);
+const b = new Reactive('b', 10);
+const c = new Reactive('c', a.value + b.value, [a, b], ({a, b})=>a+b);
+
+
