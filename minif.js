@@ -159,20 +159,22 @@ class DSMElement{
 	}
 	_cleanDSMString(){
 		this.updateInnerValue(null);
-		for(let attr_name in this.attribute){
-			this.updateAttrValue(attr_name, null);
-		} 
+		for(let attr_name in this.attribute)
+			this.updateOneAttrValue(attr_name, null);
 	}
 	isChildOf(parent_element=document){
 		return DOM.checkDescendant(parent_element, this.dom_element)
 	}
-	updateAttrValue(attr_names=[], variable=this.variable){
+	updateOneAttrValue(attr_name, variable){
 		//TODO: handle undefined dsm string
+		const dsm_string = this.attribute[attr_name];
+		if(!dsm_string) return;
+		const string = dsm_string.string(variable);
+		this.dom_element.setAttribute(attr_name, string)
+	}
+	updateAttrValue(attr_names=[], variable=this.variable){
 		for(let attr_name of attr_names){
-			const dsm_string = this.attribute[attr_name];
-			if(!dsm_string) return;
-			const string = dsm_string.string(variable);
-			this.dom_element.setAttribute(attr_name, string)
+			this.updateOneAttrValue(attr_name, variable)
 		}
 	}
 	updateInnerValue(variable=this.variable){
@@ -183,16 +185,9 @@ class DSMElement{
 	updateVariable(var_name, value){
 		this.variable[var_name] = value;
 	}
-	updateDSMString(isInnerHTML=false, attribute={}){
+	updateDSMString(isInnerHTML=false, attribute=[]){
 		if(isInnerHTML) this.updateInnerValue();
-		for(let attr_name in attribute)
-			this.updateAttrValue(attr_name);
-	}
-	//might be bad for performent reason
-	updateAllDSMString(){
-		this.updateInnerValue();
-		for(let attr_name in this.attribute)
-			this.updateAttrValue(attr_name);
+		this.updateAttrValue(attribute);
 	}
 	get name(){return this.name}
 	get attribute(){return this.attribute} 
@@ -301,24 +296,26 @@ const DSM = (function(){
 			}
 			return result;
 		},
-		updateVariable:(variable_obj={}, parent_dom=null)=>{
-			for(let var_name in variable_obj){
-				const map = dsm_variable_map[var_name];
-				if(!map) continue; 
-				const element = map.element;
-				for(let ele_name in element){
-					const each = element[ele_name];
-					const dsm_element = each['dsm_element'];
-					if(!parent_dom || dsm_element.isChildOf(parent_dom)){
-						dsm_element.updateVariable(var_name, variable_obj[var_name]);
-						dsm_element.updateDSMString(each['isInnerHTML'], each['attribute']);
-					}
+		updateVariable:(var_name, value, parent_dom=null)=>{
+			const map = dsm_variable_map[var_name];
+			if(!map) return; 
+			const element = map.element;
+			for(let ele_name in element){
+				const each = element[ele_name];
+				const dsm_element = each['dsm_element'];
+				if(!parent_dom || dsm_element.isChildOf(parent_dom)){
+					dsm_element.updateVariable(var_name, value);
+					dsm_element.updateDSMString(each['isInnerHTML'], each['attribute']);
 				}
+			}
+		},
+		updateMultipleVariable:(variable_obj={}, parent_dom=null)=>{
+			for(let var_name in variable_obj){
+				this.updateVariable(var_name, variable_obj[var_name]);
 			}
 		},
 	}
 })();
-DSM.updateVariable({a: 123, b:11});
 
 class ReactiveSubscriber{
 	_reactive;
@@ -355,7 +352,7 @@ class ReactiveSubscriber{
 	renderValue(){
 		const reactive = this._reactive;
 		const updateFunction = reactive.update_function;
-		reactive.setValue(updateFunction(this._value));
+		reactive.update(updateFunction(this._value));
 	}
 } 
 class ReactivePublisher{
@@ -375,14 +372,13 @@ class ReactivePublisher{
 		})
 	}
 }
-
 class Reactive{
-	_elements; _name; _value;
+	_name; _value; _parent_element;
 	constructor(
 		name=null, 
 		initial_value=null,
-		update_function=null,
 		reactive_publisher=null,
+		update_function=null,
 		parent_element=document
 	){
 		if(!name) return;
@@ -391,33 +387,33 @@ class Reactive{
 
 		this._publisher = new ReactivePublisher();
 
-		this.attach(name, parent_element);
-		this.setValue(initial_value);
-
-		this._update_function = update_function;
+		this.setUpdateFunction(update_function);
 		if(reactive_publisher){
-			this._subscriber = new ReactiveSubscriber(this, reactive_publisher);
+			this.setReactivePublisher(reactive_publisher);
 		}else{
-			this._subscriber = null;
+			this.setReactivePublisher();
 		}
+
+		this.update(initial_value);
 	}
-	setValue(value){
+	setUpdateFunction(update_function){
+		this._update_function = update_function;
+	}
+	setReactivePublisher(reactive_publisher=null, update_function=null){
+		this._subscriber = reactive_publisher
+			? new ReactiveSubscriber(this, reactive_publisher)
+			: null;
+		update_function ? this.setUpdateFunction(update_function) : null;
+	}
+	update(value){
 		this._value = value;
 		this._publisher.publishUpdate(value);
 		this._render();
 		return this;
 	}
-	attach(){
-		this._elements = DOM.getWithAttribute(
-			'reactive', 
-			this._name, 
-			this._parent_element
-		);
-		return this;
-	}
 
 	_render(){
-		for(let one of this._elements) one.innerHTML = this._value;
+		DSM.updateVariable(this._name, this._value, this._parent_element)
 	}
 
 	get name(){return this._name}
