@@ -1,64 +1,13 @@
-//TODO add doc comment for every methods
-const DOM = (function(){
-	return {
-		getWithClass:(class_name, element=document)=>{
-			return element.getElementsByClassName(class_name);
-		},
-		getWithId:(id, element=document)=>{
-			return element.getElementById(id);
-		},
-		g:(string, element=document)=>{
-			const splited = string.split(/([.#])/g);
-			if(splited[1] === '.')
-				return element.getElementsByClassName(splited[2]);
-			else if(splited[1] === '#')
-				return element.getElementById(splited[2]);
-		},
-		getWithAttribute:(attr_name, value=null, element=document)=>{
-			const attr = `[${attr_name}${value!==null?`="${value}"`:''}]`;
-			return element.querySelectorAll(attr);
-		},
-		getWithTag:(tag_name, element=document)=>{
-			return element.getElementsByTagName(tag_name);
-		},
-		getAllAttribute:(element=document)=>{
-			const attrs = {};
-			element.getAttributeNames().forEach((attr_name)=>{
-				return attrs[attr_name] = element.getAttribute(attr_name);
-			})
-			return attrs;
-		},
-		getAttribute:(element, attribute_name)=>{
-			return element.getAttribute(attribute_name).split(' ');
-		},
-		checkDescendant:(parent, child)=>{
-			let node = child.parentNode;
-			while (node) {
-				if (node === parent) {
-					return true;
-				}
-				node = node.parentNode;
-			}
-			return false;
-		},
-		hideElement: (element)=>{
-			element.style.visibility = 'hidden';
-			element.style.display = 'none';
-		},
-		showElement: (element)=>{
-			element.style.visibility = 'visible';
-			element.style.display = 'block';
-		}
-	}
-})();
-
 class DSMString{
 	DSMString = null;
 	constructor(string){
 		if(!string) return;
+		const p1 = /(\{\{.*?\}\})/g;
+		const p2 = /[{  }]/g;
+		const p3 = /\}\}/g;
 		//syntax_split: 
 		//	"Hello world ((a))" => ["Hello world ", "((a))"]
-		const syntax_split = string.split(/(\(\(.*?\)\))/g);
+		const syntax_split = string.split(p1);
 		//if there is no "(())" to split
 		//length will be 1
 		if(syntax_split.length <= 1) return ;
@@ -79,12 +28,12 @@ class DSMString{
 
 			//remove "((" & spaces & "))" if variable
 			const value = v_split 
-				? v_split[0].replace(/[( )]/g,'') 
+				? v_split[0].replace(p2,'') 
 				: syntax_split[i];
 			//remove "))" from update_function
 			//and apply decodeHTMLEntity to decode "& > < ' " character
 			const update_func = v_split&&v_split[1] 
-				? this.decodeHTMLEntity(v_split[1].replace(/\)\)/g, '')) || null 
+				? this.decodeHTMLEntity(v_split[1].replace(p3, '')) || null 
 				: null;
 			result.push({
 				value: value,
@@ -318,124 +267,3 @@ const DSM = (function(){
 		}
 	}
 })();
-
-class ReactiveSubscriber{
-	_reactive;
-	_publisher;
-	_value = {};
-	_subscription = {};
-	constructor(reactive, publisher){
-		this._reactive = reactive;
-
-		if(publisher.constructor == Array){
-			for(let one of publisher){
-				const name = one.name;
-				this._subscription[name] = one;
-			}
-		}else{
-			for(let name in publisher)
-				this._subscription[name] = publisher[name];
-		}
-
-		this.subscribe();
-		this.initValue();
-	}
-	subscribe(){
-		for(let name in this._subscription)
-			this._subscription[name].publisher.subscribe(this, name);
-	}
-	initValue(){
-		for(let name in this._subscription)
-			this._value[name] = this._subscription[name].value;
-	}
-	updateValue(publisher_name, new_value){
-		this._value[publisher_name] = new_value;
-	}
-	renderValue(){
-		const reactive = this._reactive;
-		const updateFunction = reactive.update_function;
-		reactive.update(updateFunction(this._value));
-	}
-} 
-class ReactivePublisher{
-	_subscribers = new Array();
-	subscribe(subscriber, assign_name){
-		this._subscribers.push({
-			assign_name: assign_name,
-			subscriber: subscriber
-		})
-	}
-	publishUpdate(new_value){
-		this._subscribers.forEach((each)=>{
-			const subscriber = each['subscriber'];;
-			const assign_name = each['assign_name'];
-			subscriber.updateValue(assign_name, new_value);
-			subscriber.renderValue();
-		})
-	}
-}
-class Reactive{
-	_name; _value; _parent_element;
-	constructor(
-		name=null, 
-		initial_value=null,
-		reactive_publisher=null,
-		update_function=null,
-		parent_element=document
-	){
-		if(!name) return;
-		this._name = name;
-		this._parent_element = parent_element;
-
-		this._publisher = new ReactivePublisher();
-
-		this.setUpdateFunction(update_function);
-		if(reactive_publisher){
-			this.setReactivePublisher(reactive_publisher);
-		}else{
-			this.setReactivePublisher();
-		}
-
-		this.update(initial_value);
-	}
-	setUpdateFunction(update_function){
-		this._update_function = update_function;
-	}
-	setReactivePublisher(reactive_publisher=null, update_function=null){
-		this._subscriber = reactive_publisher
-			? new ReactiveSubscriber(this, reactive_publisher)
-			: null;
-		update_function ? this.setUpdateFunction(update_function) : null;
-	}
-	update(value){
-		this._value = value;
-		this._publisher.publishUpdate(value);
-		this._render();
-		return this;
-	}
-
-	_render(){
-		DSM.updateVariable(this._name, this._value, this._parent_element)
-	}
-
-	get name(){return this._name}
-	get value(){return this._value}
-	get publisher(){return this._publisher}
-	get subscriber(){return this._subscriber}
-	get update_function(){return this._update_function}
-}
-
-//TODO add Reactive Doc
-/*
- * Reactive: example
-const a = new Reactive('a', 10);
-const b = new Reactive('b', 10);
-const c = new Reactive('c', a.value + b.value, [a, b], ({a, b})=>a+b);
-
-DOM.g('#button').addEventListener('click', ()=>{
-	a.update(a.value +1);
-})
-DOM.g('#button').addEventListener('mouseover', ()=>{
-	a.update(a.value -1);
-})
-*/
