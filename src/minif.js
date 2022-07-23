@@ -5,3 +5,5 @@ function toJSON(string){
 }
 const b = DOM.g("#button");
 b.addEventListener('click', toJSON(b.getAttribute('listener'))['click']);
+
+console.log(DSM.getAllElement());

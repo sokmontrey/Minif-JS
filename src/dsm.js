@@ -154,7 +154,8 @@ class DSMElement{
 			attribute: this.attribute,
 			innerHTML: this.innerHTML,
 			dom_element: this.dom_element,
-			name: this.name
+			name: this.name,
+			variable: this.variable
 		}
 	}
 }
