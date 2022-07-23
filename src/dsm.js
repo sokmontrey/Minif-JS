@@ -97,11 +97,12 @@ class DSMElement{
 	constructor(name, dom_element){
 		this.name = name;
 		this.dom_element = dom_element;
-		this._extractAttribute(dom_element);
-		this._extractInnerHTML(dom_element);
+		this._extractAttribute();
+		this._extractInnerHTML();
 		this._cleanDSMString();
 	}
-	_extractAttribute(element){
+	_extractAttribute(){
+		const element = this.dom_element;
 		const element_attrs = DOM.getAllAttribute(element);
 		for(let attr_name in element_attrs){
 			const attr_dsmstring = new DSMString(element_attrs[attr_name]);
@@ -109,7 +110,8 @@ class DSMElement{
 			this.attribute[attr_name] = attr_dsmstring;
 		}
 	}
-	_extractInnerHTML(element){
+	_extractInnerHTML(){
+		const element = this.dom_element;
 		const inner_dsmstring = new DSMString(element.innerHTML);
 		this.innerHTML = inner_dsmstring.isNull() ? null : inner_dsmstring;
 	}

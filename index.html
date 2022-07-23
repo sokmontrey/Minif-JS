@@ -7,7 +7,9 @@
 	</head>
 	<body>
 	<!--TODO using dsm attr without {{}} syntax, cause error-->
-	<button listener="{click: ()=>{a.update(a.value + 1)}}" id='button' dsm>{{a}} Click</button>
+	<button listener="{click: ()=>{a.update(a.value + 1)}}" 
+		id='button' dsm>{{a}} Click</button>
+
 		<!-- Reactive Example
 		<h1 dsm>((b:(v=5)=&gt;v))</h1>
 		<p dsm>Hello ((b:(v=5)=&gt;v))world</p>
