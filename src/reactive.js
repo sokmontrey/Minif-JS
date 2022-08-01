@@ -55,6 +55,7 @@ class ReactivePublisher{
 }
 class Reactive{
 	_name; _value; _parent_element;
+	onUpdate=null;
 	constructor(
 		name=null, 
 		initial_value=null,
@@ -87,8 +88,10 @@ class Reactive{
 		update_function ? this.setUpdateFunction(update_function) : null;
 	}
 	update(value){
-		this._value = value;
-		this._publisher.publishUpdate(value);
+		this._value= ( this.onUpdate
+			? this.onUpdate(this._value, value, this)
+			: undefined ) || value;
+		this._publisher.publishUpdate(this._value);
 		this._render();
 		return this;
 	}
@@ -118,4 +121,3 @@ DOM.g('#button').addEventListener('mouseover', ()=>{
 	a.update(a.value -1);
 })
 */
-
