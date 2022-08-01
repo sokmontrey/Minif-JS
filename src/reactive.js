@@ -16,21 +16,22 @@ class ReactiveSubscriber{
 				this._subscription[name] = publisher[name];
 		}
 
-		this.subscribe();
-		this.initValue();
+		this._subscribe();
+		this._initValue();
 	}
-	subscribe(){
+	_subscribe(){
 		for(let name in this._subscription)
 			this._subscription[name].publisher.subscribe(this, name);
 	}
-	initValue(){
+	_initValue(){
 		for(let name in this._subscription)
 			this._value[name] = this._subscription[name].value;
 	}
 	updateValue(publisher_name, new_value){
 		this._value[publisher_name] = new_value;
+		this._renderValue();
 	}
-	renderValue(){
+	_renderValue(){
 		const reactive = this._reactive;
 		const updateFunction = reactive.update_function;
 		reactive.update(updateFunction(this._value));
@@ -49,7 +50,6 @@ class ReactivePublisher{
 			const subscriber = each['subscriber'];;
 			const assign_name = each['assign_name'];
 			subscriber.updateValue(assign_name, new_value);
-			subscriber.renderValue();
 		})
 	}
 }
