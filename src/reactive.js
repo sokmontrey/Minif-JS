@@ -114,6 +114,8 @@ const a = new Reactive('a', 10);
 const b = new Reactive('b', 10);
 const c = new Reactive('c', a.value + b.value, [a, b], ({a, b})=>a+b);
 
+//TODO Reactive.onUpdate
+//
 DOM.g('#button').addEventListener('click', ()=>{
 	a.update(a.value +1);
 })
