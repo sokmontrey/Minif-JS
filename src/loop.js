@@ -65,6 +65,7 @@ class Loop{
 }
 
 //TODO: handle return as DOM instead of string
+//TODO: loop directly inside html
 /*
 const test = new Loop('list', [1,2,3], (value, index)=>{
 	return `<p id='${index}'>${value}</p>`;
