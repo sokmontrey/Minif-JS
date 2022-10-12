@@ -272,4 +272,4 @@ const DSM = (function(){
 	}
 })();
 
-//TODO: multiple line dsm not working
+//TODO: prevent from html injection
