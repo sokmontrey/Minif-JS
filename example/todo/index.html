@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+
+    <script defer src="../../src/dom.js"></script>
+    <script defer src="../../src/dsm.js"></script>
+    <script defer src="../../src/reactive.js"></script>
+    <script defer src="../../src/loop.js"></script>
+    <script defer src="../../src/minif.js"></script>
+
+    <script defer src="../todo/app.js"></script>
+</head>
+<body>
+    <ul dsm>((list: (v)=>{ 
+        if(!v) return '';
+        let r = ''; 
+        for(let task of v) r += `<li>${task}</li>`;
+        return r; 
+    }))</ul>
+
+    <input type='text' id='input'/>
+    <button id="button">Add</button>
+</body>
+</html>
