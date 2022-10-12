@@ -5,4 +5,4 @@ Originally created for the school website assignment. Minif-JS is a framework th
 MinifJS was meant to have StateManagement, Page(similar to Route), EventListener, Loop, and Condition for a simple website that dynamically changed with a scalable source code.
 But I continue to work on this project to improve my Javascript skill and hopefully gain some knowlegdge in pattern design.
 
-The website that was built with MinifJS V2: [Emery Sport](https://emerysport.netlify.app).
+The website that was built with MinifJS V2: [Emery Sport](https://emerysport.netlify.app) (Work best with desktop resolution).
