@@ -2,9 +2,10 @@ class DSMString{
 	DSMString = null;
 	constructor(string){
 		if(!string) return;
-		const p1 = /(\{\{.*?\}\})/g;
-		const p2 = /[{  }]/g;
-		const p3 = /\}\}/g;
+		string = string.split('\n').join(' ');
+		const p1 = /(\(\(.*?\)\))/g;
+		const p2 = /[(  )]/g;
+		const p3 = /\)\)/g;
 		//syntax_split: 
 		//	"Hello world ((a))" => ["Hello world ", "((a))"]
 		const syntax_split = string.split(p1);
@@ -270,3 +271,5 @@ const DSM = (function(){
 		}
 	}
 })();
+
+//TODO: multiple line dsm not working
