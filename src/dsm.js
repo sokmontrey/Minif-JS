@@ -40,6 +40,8 @@ class DSMString{
 				value: value,
 				is_variable: is_variable,
 				update_function: update_func
+				? new Function('value', `return (${update_func})(value)`)
+				: null
 			})
 		}
 		this.DSMString = result;
@@ -63,10 +65,6 @@ class DSMString{
 			: [string];
 		return result;
 	}
-	useUpdateFunction(func_def, value){
-		const func = new Function('value', `return (${func_def})(value)`);
-		return func(value) || '';
-	}
 	string(value_obj={}){
 		var result = "";
 		for(let each of this.DSMString){
@@ -74,8 +72,8 @@ class DSMString{
 				const value = value_obj 
 					? value_obj[each['value']]
 					: undefined 
-				result += each['update_function'] 
-					? this.useUpdateFunction(each['update_function'], value)
+				result += each['update_function']
+					? each['update_function'](value)
 					: value
 			}else result += each['value'] || '';
 		}
@@ -172,7 +170,7 @@ class DSMVariableMap{
 		isInnerHTML: false,
 	} */
 	dsm_element = {};
-	constructor(name){
+	constructor(name=''){
 		this.name = name;
 	}
 	addElement(dsm_element){
@@ -196,6 +194,13 @@ class DSMVariableMap{
 	}
 	get element(){return this.dsm_element}
 }
+
+class DSMEvent{
+	constructor(name=''){
+
+	}
+}
+
 const DSM = (function(){
 	const dsm_element = [];
 	function extract_dsm_element(parent_element){
@@ -210,6 +215,7 @@ const DSM = (function(){
 
 	const dsm_variable_map = {};
 	function add_variable(vars=[], element, isInner=false, attr_name=null){
+		if(!vars) return;
 		for(let var_name of vars){
 			if(!dsm_variable_map[var_name])
 				dsm_variable_map[var_name] = new DSMVariableMap(var_name); 
@@ -223,6 +229,28 @@ const DSM = (function(){
 					: null;
 		}
 	}
+
+	const dsm_event_ele = [];
+	function extract_dsm_event_ele(element){
+		for(let each of element){
+			const dom = each.dom_element;
+			const event = DOM.getAttribute(dom, 'event');
+			if(!event) continue;
+
+			const obj = new Function(`return ${event}`)();
+			for(let event_type in obj){
+				//TODO: add listener to the element
+				//To add listener, we need a list of listener first (not sure how yet)
+				//then add the listener with additional function that allowed to pass custom param
+				//
+				//Problem: order of Listener creation and the call of this method might be vary.
+				//we might need to go through 
+
+			}
+		}
+	}
+	extract_dsm_event_ele(dsm_element);
+
 	function extract_dsm_variable(element){
 		for(let each of element){
 			for(let attr_name in each.attribute){

@@ -28,7 +28,9 @@ const DOM = (function(){
 			return attrs;
 		},
 		getAttribute:(element, attribute_name)=>{
-			return element.getAttribute(attribute_name).split(' ');
+			//TODO why did I split the result ?
+			//return element.getAttribute(attribute_name).split(' ');
+			return element.getAttribute(attribute_name);
 		},
 		checkDescendant:(parent, child)=>{
 			let node = child.parentNode;
