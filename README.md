@@ -17,6 +17,17 @@ The website that was built with MinifJS V2: [Emery Sport](https://emerysport.net
     - listener.js : for managing interactivity with event listener
 3. Import your source code file after.
 
+Example: 
+```js
+    <script defer src="../../src/dom.js"></script>
+    <script defer src="../../src/dsm.js"></script>
+    <script defer src="../../src/reactive.js"></script>
+    <script defer src="../../src/loop.js"></script>
+    <script defer src="../../src/minif.js"></script>
+
+    <script defer src="./test.js"></script>
+```
+
 ## How does Minif works?
 DSM (dom syntax manager) is created in the purpose of having custom syntax in HTML. This object is essential for the other feature to work.
 
