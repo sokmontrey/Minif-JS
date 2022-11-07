@@ -36,7 +36,7 @@ In this example, Minif will replace any ((A)) with the value of Reactive "a" (wh
 
 The attribute "dsm" is there to noticfy DSM object, where look for MinifClass.
 
-Other MinifClasses are also having this pattern.
+Other MinifClasses are also having the same pattern.
 
 ### Reactive
 ```js
