@@ -195,9 +195,37 @@ class DSMVariableMap{
 	get element(){return this.dsm_element}
 }
 
-class DSMEvent{
+class DSMListenerMap{
+	name=null;
+	/* {
+		name: null,
+		dsm_element:{
+			type: []
+		}
+	} */
+	dsm_element={};
 	constructor(name=''){
+		this.name=name;
+	}
+	addElement(dsm_element, type=''){
+		if(!this.dsm_element[type]) this.dsm_element[type] = [];
 
+		this.dsm_element[type].push(dsm_element);
+	}
+	addListener(listener_func=()=>{}, parent_dom=document){
+		for(let event_type in this.dsm_element){
+			const dsm_ele_list = this.dsm_element[event_type];
+			for(let dsm_element of dsm_ele_list){
+				dsm_element.addListener(event_type, ()=>{
+					//TODO: scope problem
+					const all_param = DOM.getAttribute(
+						dsm_element.dom_element, 'listenerParam');
+					const all_param_obj = new Function(`return ${all_param}`)();
+					const param = all_param_obj[listener_name] || {};
+					listener_func(param);
+				}, parent_dom);
+			}
+		}
 	}
 }
 
@@ -222,34 +250,13 @@ const DSM = (function(){
 			
 			const var_map = dsm_variable_map[var_name];
 			var_map.addElement(element);
-			isInner 
+			isInner
 				? var_map.setIsInnerHTML(element.name, true) 
 				: attr_name 
 					? var_map.addAttribute(element.name, attr_name) 
 					: null;
 		}
 	}
-
-	const dsm_event_ele = [];
-	function extract_dsm_event_ele(element){
-		for(let each of element){
-			const dom = each.dom_element;
-			const event = DOM.getAttribute(dom, 'event');
-			if(!event) continue;
-
-			const obj = new Function(`return ${event}`)();
-			for(let event_type in obj){
-				//TODO: add listener to the element
-				//To add listener, we need a list of listener first (not sure how yet)
-				//then add the listener with additional function that allowed to pass custom param
-				//
-				//Problem: order of Listener creation and the call of this method might be vary.
-				//we might need to go through 
-
-			}
-		}
-	}
-	extract_dsm_event_ele(dsm_element);
 
 	function extract_dsm_variable(element){
 		for(let each of element){
@@ -265,10 +272,34 @@ const DSM = (function(){
 		}
 	}
 	extract_dsm_variable(dsm_element);
+	
+	const dsm_listener_map = {};
+	function extract_dsm_listener_ele(element){
+		for(let each of element){
+			const dom = each.dom_element;
+			const listener = DOM.getAttribute(dom, 'listener');
+			if(!listener) continue;
+
+			const listener_obj = new Function(`return ${listener}`)();
+			for(let event_type in listener_obj){
+				const listener_name = listener_obj[event_type];
+
+				if(!dsm_listener_map[listener_name])
+					dsm_listener_map[listener_name] = new DSMListenerMap(listener_name);
+				
+				const listener_map = dsm_listener_map[listener_name];
+				listener_map.addElement(each, event_type);
+			}
+		}
+	}
+	extract_dsm_listener_ele(dsm_element);
 
 	return {
-		getAllMap:()=>{
+		getAllVariableMap:()=>{
 			return dsm_variable_map;
+		},
+		getAllEventMap:()=>{
+			return dsm_event_map;
 		},
 		getElementChildOf: (parent_dom)=>{
 			const result = [];
@@ -287,6 +318,8 @@ const DSM = (function(){
 		updateVariable:(var_name, value, parent_dom=null)=>{
 			const map = dsm_variable_map[var_name];
 			if(!map) return; 
+			//TODO: add internal method in DSMVariableMap
+			//method: do all the update
 			const element = map.element;
 			for(let ele_name in element){
 				const each = element[ele_name];
@@ -296,8 +329,15 @@ const DSM = (function(){
 					dsm_element.updateDSMString(each['isInnerHTML'], each['attribute']);
 				}
 			}
+		},
+		addEventListener:(listener_name, listener_function, parent_dom=null)=>{
+			const map = dsm_listener_map[listener_name];
+			if(!map) return;
+			map.addListener(listener_function, parent_dom);
 		}
 	}
 })();
+
+DSM.addEventListener('updateA', ()=>{});
 
 //TODO: prevent from html injection

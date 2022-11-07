@@ -12,23 +12,16 @@
     <script defer src="../../src/loop.js"></script>
     <script defer src="../../src/minif.js"></script>
 
-    <script defer src="../todo/app.js"></script>
+    <script defer src="./test.js"></script>
 </head>
 <body>
-    <ul dsm>((display_list))</ul>
-    <!--
-        you can also use dsm update function directly
-        in html with list Reactive instead of creating a loop
-
-    <ul dsm>((list: (v)=>{
-        if(!v) return '';
-        let result = '';
-        for(let task of v) result += `<li>${task}</li>`;
-        return result;
-    }))</ul>
-    -->
-
-    <input type='text' id='input'/>
-    <button id="button">Add</button>
+    <button
+        listener='{click: "updateA"}' 
+        listenerParam='{updateA: {a: 1, b:3}}'
+        dsm>Click</button>
+    <button
+        listener='{click: "updateA"}'
+        listenerParam='{updateA: {a: ((a)), b: 5}}'
+        dsm>Click</button>
 </body>
 </html>
