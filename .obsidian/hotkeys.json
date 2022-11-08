@@ -1,0 +1,18 @@
+{
+  "multi-column-markdown:insert-multi-column-region": [
+    {
+      "modifiers": [
+        "Alt"
+      ],
+      "key": "C"
+    }
+  ],
+  "obsidian-latex-environments:insert-latex-env": [
+    {
+      "modifiers": [
+        "Alt"
+      ],
+      "key": "L"
+    }
+  ]
+}

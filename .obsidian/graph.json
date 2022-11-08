@@ -1,0 +1,58 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": true,
+  "showOrphans": true,
+  "collapse-color-groups": true,
+  "colorGroups": [
+    {
+      "query": "Chemistry",
+      "color": {
+        "a": 1,
+        "rgb": 14701138
+      }
+    },
+    {
+      "query": "English",
+      "color": {
+        "a": 1,
+        "rgb": 14069084
+      }
+    },
+    {
+      "query": "Electrical Engineering",
+      "color": {
+        "a": 1,
+        "rgb": 11392604
+      }
+    },
+    {
+      "query": "Physic",
+      "color": {
+        "a": 1,
+        "rgb": 5431378
+      }
+    },
+    {
+      "query": "Quantum Mechanic",
+      "color": {
+        "a": 1,
+        "rgb": 5431473
+      }
+    }
+  ],
+  "collapse-display": true,
+  "showArrow": false,
+  "textFadeMultiplier": -0.1,
+  "nodeSizeMultiplier": 1.4475,
+  "lineSizeMultiplier": 1.95791666666667,
+  "collapse-forces": false,
+  "centerStrength": 0.729166666666667,
+  "repelStrength": 15.4166666666667,
+  "linkStrength": 0.85,
+  "linkDistance": 85,
+  "scale": 0.03793606006359964,
+  "close": false
+}
