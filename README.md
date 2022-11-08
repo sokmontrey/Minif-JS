@@ -14,11 +14,8 @@ The website that was built with MinifJS V2: [Emery Sport](https://emerysport.net
 
 ## How can I use Minif?
 
-1. Import (with `defer` attibute) `dom.js` and `dsm.js` in this specific order: `dom.js` -> `dsm.js`
-2. Import any of the following MinifClass for your requirement:
-   - reactive.js : for reactive state
-   - loop.js : require reactve.js, for reactive loop
-   - listener.js : for managing interactivity with event listener
+1. Import (with `defer` attibute) `dom.js` and `dsm.js` in this specific order: `dom.js` $\rightarrow$ `dsm.js`
+2. Import any of the [MinifClass](#MinifClass) for your requirement.
 3. Import your source code file last.
 
 Example:
