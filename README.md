@@ -101,6 +101,3 @@ new Listener("update", ({ a }) => {
 </button>
 ```
 
-TODO:
-
-- [] Creating Listener
