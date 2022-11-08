@@ -14,90 +14,38 @@ The website that was built with MinifJS V2: [Emery Sport](https://emerysport.net
 
 ## How can I use Minif?
 
-1. Import all the JS code from src in this specific order (with `defer` attibute): dom.js -> dsm.js
+1. Import (with `defer` attibute) `dom.js` and `dsm.js` in this specific order: `dom.js` -> `dsm.js`
 2. Import any of the following MinifClass for your requirement:
    - reactive.js : for reactive state
    - loop.js : require reactve.js, for reactive loop
    - listener.js : for managing interactivity with event listener
-3. Import your source code file after.
+3. Import your source code file last.
 
 Example:
 
 ```js
-    <script defer src="../../src/dom.js"></script>
-    <script defer src="../../src/dsm.js"></script>
-    <script defer src="../../src/reactive.js"></script>
-    <script defer src="../../src/loop.js"></script>
-    <script defer src="../../src/minif.js"></script>
-
-    <script defer src="./test.js"></script>
+    //Madatory
+    <script defer src="./dom.js"></script>
+    <script defer src="./dsm.js"></script>
+    
+    //Depend on your need
+    <script defer src="./reactive.js"></script>
+    <script defer src="./loop.js"></script>
+    <script defer src="./minif.js"></script>
+    
+    //Application code
+    <script defer src="./app.js"></script>
 ```
 
-## How does Minif works?
+## How to use MinifJS
+By using DSM or Dom Syntax Manager (I should use a better name) algorithms, it is easier to communicate between Javascript and HTML with less code.
 
-DSM (dom syntax manager) is created in the purpose of having custom syntax in HTML. This object is essential for the other feature to work.
+DSM is not a part of developer interface. What MinifJS offers you, is the **MinifClasses**.
 
-Fundamentally, you can create object from any of the MinifClass in your javascript code, then you can change the HTML value by using corresponding DSM syntax.
-
-For example in Javascript:
-
-```js
-const a = new Reactive("A", 5);
-```
-
-Then in HTML:
-
-```html
-<h1 dsm>((A))</h1>
-```
-
-In this example, Minif will replace any ((A)) with the value of Reactive "a" (which is 5).
-
-The attribute "dsm" is there to noticfy DSM object, where look for MinifClass.
-
-Other MinifClasses are also having the same pattern.
+## MinifClass
+List of MinifClass:
+> [[#Reactive]]
 
 ### Reactive
-
-```js
-new Reactive("a", 10);
-new Reactive("b", "blue");
-```
-
-```html
-<h1 dsm>((a))</h1>
-<h2 style="background-color: ((b));" dsm>Hello world</h2>
-```
-
----
-
 ### Loop
-
-```js
-new Loop("loop", [1, 2, 3], (value) => {
-  return `<li>${value}</li>`;
-});
-```
-
-```html
-<ul dsm>
-  ((loop))
-</ul>
-```
-
----
-
 ### Listener
-
-```js
-new Listener("update", ({ a }) => {
-  console.log(a);
-});
-```
-
-```html
-<button listener="{'click': 'updateA'}" listenerParam="{'updateA': {a: 5}}" dsm>
-  Click
-</button>
-```
-
