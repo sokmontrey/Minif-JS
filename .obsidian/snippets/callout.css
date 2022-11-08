@@ -1,9 +1,0 @@
-.callout[data-callout="cheat-sheet"] {
-  --callout-color: 255, 255, 255;
-}
-.callout[data-callout="terms"] {
-  --callout-color: 220, 220, 0;
-}
-.callout[data-callout="example"] {
-  --callout-color: 0, 200, 200;
-}
