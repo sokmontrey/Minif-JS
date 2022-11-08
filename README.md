@@ -92,11 +92,30 @@ reactive_obj.update('GoodBye');
 //this will automatically update the HTML content
 ```
 
-**Reactive that react to other Reactive**
+**Javascript code that react Reactive (using onUpdate)**
 
-Using `reactive_obj.value` will return "one-time" value. It will not update when the `reactive_obj.update()` is called.
+Using `Reactive.value` will return "one-time" value. It will not update when the `Reactive.update()` is called.
 
-To create a Javascript code that will react to a Reactive, Reactive.onUpdate() can be used.
+To create a Javascript code that will react to a Reactive, `Reactive.setOnUpdate(callback)` can be used. The `callback` function will be called everytime the reactive is update
+
+```js
+Reactive.setOnUpdate((old_value, new_value, reactive)=>{});
+```
+
+**Reactive that react to other Reactive (using Observer)**
+
+>Observer is a design pattern that objects listen to the others for the update.
+
+Reactive has a built-in observer constructor that let you create a reactive object that listen to a specific reactive.
+
+```js
+const a = new Reactive('A', 1);
+const b = new Reactive('B', 0, 
+    {'a': a}, 
+    ({a})=>{return a + 1;}
+);
+//b will be initially 0. But when we use a.update(), b will be become a + 1
+```
 
 ---
 ### Loop
