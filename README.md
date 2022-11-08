@@ -44,7 +44,7 @@ DSM is not a part of developer interface. What MinifJS offers you, is the **Mini
 
 ## MinifClass
 List of MinifClass:
-> [[#Reactive]]
+> [Reactive](#Reactive)
 
 ### Reactive
 ### Loop
