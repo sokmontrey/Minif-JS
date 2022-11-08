@@ -216,14 +216,16 @@ class DSMListenerMap{
 		for(let event_type in this.dsm_element){
 			const dsm_ele_list = this.dsm_element[event_type];
 			for(let dsm_element of dsm_ele_list){
-				dsm_element.addListener(event_type, ()=>{
-					//TODO: scope problem
-					const all_param = DOM.getAttribute(
-						dsm_element.dom_element, 'listenerParam');
-					const all_param_obj = new Function(`return ${all_param}`)();
-					const param = all_param_obj[listener_name] || {};
-					listener_func(param);
-				}, parent_dom);
+				if(!dsm_element.isChildOf(parent_dom)) return;
+				const dom_element = dsm_element.dom_element;
+				const all_param = DOM.getAttribute(dom_element, 'listenerParam');
+				const all_param_obj = new Function(`return ${all_param}`)();
+				const param = all_param_obj 
+					? all_param_obj[this.name] 
+					: {}; 
+				dom_element.addEventListener(event_type, (event)=>{
+					listener_func(event, param);
+				});
 			}
 		}
 	}
@@ -330,14 +332,12 @@ const DSM = (function(){
 				}
 			}
 		},
-		addEventListener:(listener_name, listener_function, parent_dom=null)=>{
+		addEventListener:(listener_name, listener_function, parent_dom=document)=>{
 			const map = dsm_listener_map[listener_name];
 			if(!map) return;
 			map.addListener(listener_function, parent_dom);
 		}
 	}
 })();
-
-DSM.addEventListener('updateA', ()=>{});
 
 //TODO: prevent from html injection

@@ -10,7 +10,7 @@
     <script defer src="../../src/dsm.js"></script>
     <script defer src="../../src/reactive.js"></script>
     <script defer src="../../src/loop.js"></script>
-    <script defer src="../../src/minif.js"></script>
+    <script defer src="../../src/listener.js"></script>
 
     <script defer src="../todo/app.js"></script>
 </head>
@@ -28,7 +28,7 @@
     }))</ul>
     -->
 
-    <input type='text' id='input'/>
-    <button id="button">Add</button>
+    <input type='text' listener="{'change': 'inputChange'}" dsm/>
+    <button listener='{"click": "updateList"}' dsm>Add</button>
 </body>
 </html>

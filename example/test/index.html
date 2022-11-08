@@ -10,7 +10,7 @@
     <script defer src="../../src/dsm.js"></script>
     <script defer src="../../src/reactive.js"></script>
     <script defer src="../../src/loop.js"></script>
-    <script defer src="../../src/minif.js"></script>
+    <script defer src="../../src/listener.js"></script>
 
     <script defer src="./test.js"></script>
 </head>
@@ -18,10 +18,11 @@
     <button
         listener='{click: "updateA"}' 
         listenerParam='{updateA: {a: 1, b:3}}'
-        dsm>Click</button>
+        dsm>Click ((a))</button>
+
     <button
         listener='{click: "updateA"}'
         listenerParam='{updateA: {a: ((a)), b: 5}}'
-        dsm>Click</button>
+        dsm>Click ((a)) ((b))</button>
 </body>
 </html>

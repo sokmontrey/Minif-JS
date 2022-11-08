@@ -1,10 +1,15 @@
 const list = new Reactive('list', []);
+const input = new Reactive('input', '');
+
 const display_list = new Loop('display_list', list, (value)=>{
     return `<li>${value}</li>`;
 });
 
-DOM.g('#button').addEventListener('click', ()=>{
-    const value = DOM.g('#input').value;
-    list.value.push(value);
+new Listener('inputChange', (event)=>{
+    input.update(event.target.value);
+});
+
+new Listener('updateList', ()=>{
+    list.value.push(input.value);
     list.update(list.value);
-}); 
+});
