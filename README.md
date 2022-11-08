@@ -8,7 +8,7 @@ MinifJS was meant to have Reactive State Management, Loop, and Condition for a s
 The website that was built with MinifJS V2: [Emery Sport](https://emerysport.netlify.app) (Work best with desktop resolution).
 
 > [!NOTE]
-> Please note that MinifJS is not an efficient solution for a large code base. It is just for the productivity in a small project. Like my school assignment, for example, where everything have to be in the front end side.
+> Please note that MinifJS is not an efficient solution for a large code base. It is just for the productivity in a small project. Like my school assignment, for example, where everything have to be in the front end side. Vanilla JS would do, but Minif can do more with less code.
 
 ---
 
