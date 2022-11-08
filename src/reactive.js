@@ -87,10 +87,13 @@ class Reactive{
 			: null;
 		update_function ? this.setUpdateFunction(update_function) : null;
 	}
+	setOnUpdate(onUpdate_function=()=>{}){
+		//onUpdate(old_value, new_value, reactive);
+		this.onUpdate = onUpdate_function;
+	}
 	update(value){
-		this._value= ( this.onUpdate
-			? this.onUpdate(this._value, value, this)
-			: undefined ) || value;
+		if(this.onUpdate) this.onUpdate(this._value, value, this);
+		this._value = value;
 		this._publisher.publishUpdate(this._value);
 		this._render();
 		return this;
