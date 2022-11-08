@@ -34,15 +34,65 @@ Example:
     <script defer src="./app.js"></script>
 ```
 
-## How to use MinifJS
-By using DSM or Dom Syntax Manager (I should use a better name) algorithms, it is easier to communicate between Javascript and HTML with less code.
+---
 
-DSM is not a part of developer interface. What MinifJS offers you, is the **MinifClasses**.
+## How does MinifJS works?
+By using DSM or Dom Syntax Manager (I should have a better name) algorithms, it is easier to communicate between Javascript and HTML with less code.
+
+DSM is not a part of developer interface. What MinifJS offers you, is the [**MinifClasses**](#MinifClass).
+
+---
 
 ## MinifClass
 List of MinifClass:
-> [Reactive](#Reactive)
+1. [Reactive](#Reactive)
+2. [Loop](#Loop)
+3. [Listener](#Listener)
+
+Important term:
+> - dsm_name: are string argument for MinifClass that let Javascript talk with HTML
 
 ### Reactive
+Create Reactive:
+```js
+const reactive_obj = new Reactive(
+    dsm_name, //String
+    initial_value, //Any
+    reactive_publisher, //Object of Reactive with custom name as key
+    update_function, //Function
+    parent_dom //DOM
+);
+
+//update reactive value
+reactive_obj.update(new_value);
+//get reactive value
+console.log(reactive_obj.value);
+```
+**Simplest Reactive Example**
+
+```js
+//app.js
+const reactive_obj = new Reactive('dsm_name', 'Hello world');
+const reactive_obj2 = new Reactive('dsm_name2', 'visible')
+```
+
+After the Reactive is created, we can use it in HTML by:
+```html
+<!-- in InnerHTML -->
+<h1>((dsm_name))</h1>
+
+<!-- in Attribute -->
+<h2 style='visibility: ((dsm_name2));'>Hello world</h2>
+```
+
+Changing the reactive value by:
+```js
+//app.js
+reactive_obj.update('GoodBye');
+//this will automatically update the HTML content
+```
+
+---
 ### Loop
+---
 ### Listener
