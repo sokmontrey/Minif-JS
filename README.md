@@ -110,9 +110,9 @@ Reactive has a built-in observer constructor that let you create a reactive obje
 
 ```js
 const a = new Reactive('A', 1);
-const b = new Reactive('B', 0, {'a': a}, ({a})=>{return a.value + 1});
+const b = new Reactive('B', 0, {'a': a}, ({a})=>{return a + 1});
 //b is initiated to 0. But when we update a, b will be become a + 1
-const c = new Reactive('C', 0, {'a': a, 'b':b}, ({a, b})=>{return a.value * b.value});
+const c = new Reactive('C', 0, {'a': a, 'b':b}, ({a, b})=>{return a * b});
 //c is initiated to 0 and will update to a * b everytime either a or b is update.
 ```
 
@@ -121,11 +121,35 @@ You can also use array as reactive_publisher argument.
 
 ```js
 const a = new Reactive('A', 0);
-const b = new Reactive('B', 0, [a], ({A})=>{ return A.value + 1; });
-const c = new Reactive('C', 0, [a,b], ({A,B})=>{ return A.value * B.value; });
+const b = new Reactive('B', 0, [a], ({A})=>{ return A + 1; });
+const c = new Reactive('C', 0, [a,b], ({A,B})=>{ return A * B; });
 ```
 
 In this case, Minif will use Publisher Reactive's dsm_name as the parameter object name.
+
+Here is how the update_function parameter works. 
+> NOTE: this is just a simplification. Minif code, under the hood, does not work like this.
+ 
+You make a list of publishers (in this case, a and b) then pass it to a subscriber (c).
+```js
+const publisjer = {
+    'custom_name_a': a,
+    'custom_name_b': b,
+}
+
+//then when either a or b is updated.
+//this object will be
+const publisher = {
+    'custom_name_a': [a new value],
+    'custom_name_b': [b new value]
+}
+//then this object will pass as an argument into the update function (callback)
+const new_value = update_function(publisher);
+//the return value of this function will update the listener value (c)
+c.update(new_value);
+```
+
+In case when the publisher object is an Array, Minif will still create hashmap with key of publisher's dsm_name. 
 
 ---
 ### Loop
