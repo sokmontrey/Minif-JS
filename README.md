@@ -92,7 +92,7 @@ reactive_obj.update('GoodBye');
 //this will automatically update the HTML content
 ```
 
-**Javascript code that react Reactive (using onUpdate)**
+**Javascript code that react to Reactive (using onUpdate)**
 
 Using `Reactive.value` will return "one-time" value. It will not update when the `Reactive.update()` is called.
 
