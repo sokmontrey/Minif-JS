@@ -109,11 +109,11 @@ Reactive.setOnUpdate((old_value, new_value, reactive)=>{});
 Reactive has a built-in observer constructor that let you create a reactive object that listen to a specific reactive.
 
 ```js
-const a = new Reactive('A', 1);
+const a = new Reactive('A', 0);
 const b = new Reactive('B', 0, {'a': a}, ({a})=>{return a + 1});
-//b is initiated to 0. But when we update a, b will be become a + 1
+//b is initiated to 0. But when we update a, b will become a.value + 1
 const c = new Reactive('C', 0, {'a': a, 'b':b}, ({a, b})=>{return a * b});
-//c is initiated to 0 and will update to a * b everytime either a or b is update.
+//c is initiated to 0 and will update to a.value * b.value everytime either a or b is update.
 ```
 
 - Reactive `b` is the subscriber or listener of Reactive `a`.
@@ -126,7 +126,9 @@ You can also use array as reactive_publisher argument.
 ```js
 const a = new Reactive('A', 0);
 const b = new Reactive('B', 0, [a], ({A})=>{ return A + 1; });
+//b is initiated to 0. But when we update a, b will become a.value + 1
 const c = new Reactive('C', 0, [a,b], ({A,B})=>{ return A * B; });
+//c is initiated to 0 and will update to a.value * b.value everytime either a or b is update.
 ```
 
 In this case, Minif will use **publisher** reactive's dsm_name as the parameter hashmap key. So, the parameter of the callback, we have to use the publisher dsm_name instead.
