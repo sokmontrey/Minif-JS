@@ -110,11 +110,22 @@ Reactive has a built-in observer constructor that let you create a reactive obje
 
 ```js
 const a = new Reactive('A', 1);
-const b = new Reactive('B', 0, {'a': a}, ({a})=>{return a + 1});
+const b = new Reactive('B', 0, {'a': a}, ({a})=>{return a.value + 1});
 //b is initiated to 0. But when we update a, b will be become a + 1
-const c = new Reactive('C', 0, {'a': a, 'b':b}, ({a, b})=>{return a * b});
+const c = new Reactive('C', 0, {'a': a, 'b':b}, ({a, b})=>{return a.value * b.value});
 //c is initiated to 0 and will update to a * b everytime either a or b is update.
 ```
+
+In reactive_publisher argument `{'a': a}`, `'a'` is your custom name that will use as parameter for the update function.
+You can also use array as reactive_publisher argument.
+
+```js
+const a = new Reactive('A', 0);
+const b = new Reactive('B', 0, [a], ({A})=>{ return A.value + 1; });
+const c = new Reactive('C', 0, [a,b], ({A,B})=>{ return A.value * B.value; });
+```
+
+In this case, Minif will use Publisher Reactive's dsm_name as the parameter object name.
 
 ---
 ### Loop
