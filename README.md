@@ -110,11 +110,10 @@ Reactive has a built-in observer constructor that let you create a reactive obje
 
 ```js
 const a = new Reactive('A', 1);
-const b = new Reactive('B', 0, 
-    {'a': a}, 
-    ({a})=>{return a + 1;}
-);
-//b will be initially 0. But when we use a.update(), b will be become a + 1
+const b = new Reactive('B', 0, {'a': a}, ({a})=>{return a + 1});
+//b is initiated to 0. But when we update a, b will be become a + 1
+const c = new Reactive('C', 0, {'a': a, 'b':b}, ({a, b})=>{return a * b});
+//c is initiated to 0 and will update to a * b everytime either a or b is update.
 ```
 
 ---
