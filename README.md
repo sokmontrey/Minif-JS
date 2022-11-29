@@ -20,17 +20,17 @@ The website that was built with MinifJS V2: [Emery Sport](https://emerysport.net
 
 Example:
 
-```js
-    //Madatory
+```html
+    <!--Madatory-->
     <script defer src="./dom.js"></script>
     <script defer src="./dsm.js"></script>
     
-    //Depend on your need
+    <!--Depend on your need-->
     <script defer src="./reactive.js"></script>
     <script defer src="./loop.js"></script>
     <script defer src="./minif.js"></script>
     
-    //Application code
+    <!--Application code-->
     <script defer src="./app.js"></script>
 ```
 
