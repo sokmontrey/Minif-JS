@@ -131,7 +131,7 @@ const c = new Reactive('C', 0, [a,b], ({A,B})=>{ return A * B; });
 //c is initiated to 0 and will update to a.value * b.value everytime either a or b is update.
 ```
 
-In this case, Minif will use **publisher** reactive's dsm_name as the parameter hashmap key. So, the parameter of the callback, we have to use the publisher dsm_name instead.
+In this case, Minif will use **publisher** reactive's dsm_name as the parameter hashmap key. So, the parameter of the callback have be the dsm_name instead.
 
 Here is how the callback `update_function` parameter works. 
 > NOTE: this is just a simplification. Minif code, under the hood, does not work like this.
