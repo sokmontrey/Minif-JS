@@ -37,7 +37,7 @@ Example:
 ---
 
 ## How does MinifJS works?
-By using DSM or Dom Syntax Manager (I should have a better name) algorithms, it is easier to communicate between Javascript and HTML with less code.
+By using DSM or Dom Syntax Manager (I should have use a better name) algorithms, it is easier to communicate between Javascript and HTML with less code.
 
 DSM is not a part of developer interface. What MinifJS offers you, is the [**MinifClasses**](#MinifClass).
 
