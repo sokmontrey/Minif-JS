@@ -53,6 +53,7 @@ Important term:
 > - dsm_name: are string argument for MinifClass that let Javascript talk with HTML
 
 ### Reactive
+TODO: simplify (example first. then, detail)
 Create Reactive:
 ```js
 const reactive_obj = new Reactive(
