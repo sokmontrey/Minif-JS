@@ -48,6 +48,7 @@ class Loop{
 	}
 	setCallback(callback){
 		this._callback = callback;
+		this._render();
 	}
 	update(value){
 		this._value = ( this.onUpdate
