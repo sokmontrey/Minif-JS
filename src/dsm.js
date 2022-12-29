@@ -241,7 +241,6 @@ const DSM = (function(){
 			dsm_element.push(new DSMElement(name, element));
 		}
 	}
-	extract_dsm_element(document);
 
 	const dsm_variable_map = {};
 	function add_variable(vars=[], element, isInner=false, attr_name=null){
@@ -273,7 +272,6 @@ const DSM = (function(){
 			add_variable(inner_vars, each, true)
 		}
 	}
-	extract_dsm_variable(dsm_element);
 	
 	const dsm_listener_map = {};
 	function extract_dsm_listener_ele(element){
@@ -294,9 +292,18 @@ const DSM = (function(){
 			}
 		}
 	}
-	extract_dsm_listener_ele(dsm_element);
+
+	function update_dsm_map(){
+		extract_dsm_element(document);
+		extract_dsm_variable(dsm_element);
+	}
+
+	update_dsm_map();
 
 	return {
+		update: ()=>{
+			update_dsm_map();
+		},
 		getAllVariableMap:()=>{
 			return dsm_variable_map;
 		},
