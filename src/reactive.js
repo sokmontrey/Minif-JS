@@ -100,7 +100,8 @@ class Reactive{
 	}
 
 	_render(){
-		DSM.updateVariable(this._name, this._value, this._parent_element)
+		DSM.updateVariable(this._name, this._value, this._parent_element);
+		DSM.update();
 	}
 
 	get name(){return this._name}
