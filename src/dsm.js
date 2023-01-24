@@ -299,6 +299,7 @@ const DSM = (function(){
 	}
 
 	update_dsm_map();
+	extract_dsm_listener_ele(dsm_element);
 
 	return {
 		update: ()=>{
